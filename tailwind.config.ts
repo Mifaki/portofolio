@@ -9,6 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        'porto-primary': '#F3F1EB',
+        'porto-accent': '#F3F3F0',
+        'porto-text': '#393D4E',
+        'porto-text-secondary': '#677487',
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
