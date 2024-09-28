@@ -1,5 +1,19 @@
 import { ErrorBoundary } from "react-error-boundary";
+import { Metadata } from "next";
+import { useGenerateMetadata } from "@/shared/usecase/useGenerateMetada";
 import CustomErrorBoundary from "@/shared/container/custom-error-boundary/CustomErrorBoundary";
+
+export const metadata: Metadata = useGenerateMetadata({
+    pageTitle: "Home",
+    description: "Ahmad Faiz's portfolio",
+    canonicalPath: "/",
+    keywords: [
+        "Ahmad Faiz Agustianto",
+        "Ahmad Faiz",
+        "Faiz"
+    ],
+    type: "website",
+});
 
 export default function HomeLayout({
     children,
