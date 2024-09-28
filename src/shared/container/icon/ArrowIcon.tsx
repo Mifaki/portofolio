@@ -1,4 +1,6 @@
-function ArrowIcon(props: React.SVGProps<SVGSVGElement>) {
+import React, { forwardRef } from 'react';
+
+const ArrowIcon = forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>((props, ref) => {
     return (
         <svg
             width="14"
@@ -6,6 +8,7 @@ function ArrowIcon(props: React.SVGProps<SVGSVGElement>) {
             viewBox="0 0 14 13"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            ref={ref}
             {...props}
         >
             <path
@@ -14,6 +17,8 @@ function ArrowIcon(props: React.SVGProps<SVGSVGElement>) {
             />
         </svg>
     );
-}
+});
+
+ArrowIcon.displayName = 'ArrowIcon';
 
 export default ArrowIcon;

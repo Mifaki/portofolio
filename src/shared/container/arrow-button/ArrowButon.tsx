@@ -1,49 +1,72 @@
 'use client'
 
-import {
+import React, {
     useRef,
-    useEffect
+    useEffect,
 } from 'react';
 import { gsap } from 'gsap';
 import ArrowIcon from "@/shared/container/icon/ArrowIcon";
 import Link from 'next/link';
+import TransitionLink from '../transition-link/TransitionLink';
 
 interface IArrowButton {
     href?: string;
     text?: string;
 }
 
-const ArrowButton = ({
+const ArrowButton: React.FC<IArrowButton> = ({
     href,
     text = "Explore More"
-}: IArrowButton) => {
+}) => {
+
     const underlineRef = useRef<HTMLSpanElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const arrowRef = useRef<SVGSVGElement>(null);
 
     useEffect(() => {
+
         const underline = underlineRef.current;
         const container = containerRef.current;
+        const arrow = arrowRef.current;
 
-        if (underline && container) {
-            gsap.set(underline, { width: 0 });
-
-            container.addEventListener('mouseenter', () => {
-                gsap.to(underline, { width: '100%', duration: 0.3, ease: 'power2.out' });
-            });
-
-            container.addEventListener('mouseleave', () => {
-                gsap.to(underline, { width: 0, duration: 0.3, ease: 'power2.in' });
-            });
+        if (!underline || !container || !arrow) {
+            throw Error('One or more refs are null, aborting effect');
         }
+
+        gsap.set(underline, { width: 0 });
+        gsap.set(arrow, { x: 0 });
+
+        const handleMouseEnter = () => {
+            gsap.to(underline, { width: '100%', duration: 0.3, ease: 'power2.out' });
+            gsap.to(arrow, { x: 5, duration: 0.3, ease: 'power2.out' });
+        };
+
+        const handleMouseLeave = () => {
+            gsap.to(underline, { width: 0, duration: 0.3, ease: 'power2.in' });
+            gsap.to(arrow, { x: 0, duration: 0.3, ease: 'power2.in' });
+        };
+
+        container.addEventListener('mouseenter', handleMouseEnter);
+        container.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            console.log('Cleanup running');
+            container.removeEventListener('mouseenter', handleMouseEnter);
+            container.removeEventListener('mouseleave', handleMouseLeave);
+        };
     }, []);
 
     return (
-        <Link
+        <TransitionLink
             href={href ?? '#'}
-            passHref
         >
-            <div ref={containerRef} className="inline-flex items-center gap-4 group cursor-pointer">
-                <ArrowIcon />
+            <div 
+                ref={containerRef} 
+                className="inline-flex items-center gap-4 group cursor-pointer"
+            >
+                <div className="relative">
+                    <ArrowIcon ref={arrowRef} />
+                </div>
                 <div className="relative">
                     <span className="text-porto-text-secondary">{text}</span>
                     <span
@@ -53,7 +76,7 @@ const ArrowButton = ({
                     />
                 </div>
             </div>
-        </Link>
+        </TransitionLink>
     );
 };
 

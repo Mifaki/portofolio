@@ -12,6 +12,7 @@ import OutlineCircle from '@/assets/background-outline-circle.png'
 import SIMABAHome from '@/assets/simaba_home.png'
 import TechCard from "./tech-card/TechCard";
 import ArrowButton from "@/shared/container/arrow-button/ArrowButon";
+import ProjectCard from "./project-card/ProjectCard";
 
 export default function HomeContainer() {
 
@@ -66,16 +67,14 @@ export default function HomeContainer() {
                 </div>
             </div>
             <AuthorImage image={AuthorIMG} />
-            <div className="bg-porto-primary col-span-8 row-span-3 rounded-3xl p-6 space-y-3 relative" >
-                <h2 className="font-libre italic text-4xl leading-[120%] font-semibold">Nikahyook</h2>
-                <ArrowButton href="/project/nikahyook" />
-                <Image
-                    src={NikahyookHome}
-                    alt="Simaba 2023"
-                    className="absolute bottom-0 right-0 object-cover rounded-tr-3xl rounded-br-3xl"
-                    style={{ width: '80%', height: '100%' }}
-                />
-            </div>
+            <ProjectCard
+                name="Nikahyook"
+                redirectUrl="/project/nikahyook"
+                image={NikahyookHome}
+                colSpan={8}
+                rowSpan={3}
+                imageHeight={100}
+            />
             <div className="flex flex-col justify-between bg-porto-primary col-span-4 row-span-5 rounded-3xl p-6">
                 <div>
                     <h1 className="font-libre italic text-[48px] leading-[120%] font-semibold mb-">Ahmad Faiz <br /> Agustianto</h1>
@@ -87,26 +86,22 @@ export default function HomeContainer() {
                     <ArrowButton text="Fron-End Developer" />
                 </div>
             </div>
-            <div className="bg-porto-primary col-span-4 row-span-4 rounded-3xl p-6 relative space-y-2" >
-                <h2 className="font-libre italic text-4xl leading-[100%] font-semibold mb-2">SIMABA <br /> 2023</h2>
-                <ArrowButton href="/project/simaba" />
-                <Image
-                    src={SIMABAHome}
-                    alt="Simaba 2023"
-                    className="absolute bottom-0 right-0 object-cover rounded-br-3xl"
-                    style={{ width: '60%', height: '85%' }}
-                />
-            </div>
-            <div className="bg-porto-primary col-span-4 row-span-4 rounded-3xl p-6 relative sapce-y-2" >
-                <h2 className="font-libre italic text-4xl leading-[100%] font-semibold mb-2">Kampung <br /> Budaya</h2>
-                <ArrowButton href="/project/kampung-budaya" />
-                <Image
-                    src={KambudHome}
-                    alt="Kampung Budaya"
-                    className="absolute bottom-0 right-0 object-cover rounded-br-3xl"
-                    style={{ width: '60%', height: '85%' }}
-                />
-            </div>
+            <ProjectCard
+                name="SIMABA 2023"
+                redirectUrl="/project/simaba"
+                image={SIMABAHome}
+                colSpan={4}
+                rowSpan={4}
+                imageHeight={85}
+            />
+            <ProjectCard
+                name="Kampung Budaya"
+                redirectUrl="/project/kampung-budaya"
+                image={KambudHome}
+                colSpan={4}
+                rowSpan={4}
+                imageHeight={85}
+            />
         </>
     )
 } 
