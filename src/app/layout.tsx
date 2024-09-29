@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.className}antialiased w-full h-screen p-6`}
+        className={`${poppins.className}antialiased w-full min-h-screen p-6`}
       >
         {children}
       </body>
