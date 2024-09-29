@@ -4,7 +4,7 @@ import { useGenerateMetadata } from "@/shared/usecase/useGenerateMetada";
 import CustomErrorBoundary from "@/shared/container/custom-error-boundary/CustomErrorBoundary";
 
 export const metadata: Metadata = useGenerateMetadata({
-    pageTitle: "Home",
+    pageTitle: "Project",
     description: "Ahmad Faiz's portfolio",
     canonicalPath: "/",
     keywords: [

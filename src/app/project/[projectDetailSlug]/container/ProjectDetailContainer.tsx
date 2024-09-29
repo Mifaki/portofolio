@@ -1,82 +1,78 @@
+'use client'
+
+import { 
+    IProcessedImage, 
+    IProject 
+} from "@/models/projectinterfaces"
+import { useSortImage } from "../usecase/useSortImage"
 import ArrowButton from "@/shared/container/arrow-button/ArrowButon"
+import FilledCircle from '@/assets/background-filled-circle.png'
 import Image from "next/image"
 
-const ProjectDetailContainer = () => {
+const ProjectDetailContainer = ({ project }: { project: IProject }) => {
+
+    const { 
+        mainImage, 
+        additionalImages, 
+        hasVideo 
+    } = useSortImage(project);
+
+    const renderImage = (image: IProcessedImage) => (
+        <div className={`bg-porto-primary rounded-3xl relative ${image.className}`}>
+            <Image
+                src={image.imageUrl}
+                alt={image.alt}
+                objectFit="cover"
+                fill
+                style={{ width: '100%', height: '100%' }}
+                className="rounded-3xl"
+            />
+        </div>
+    );
+
     return (
         <>
-            <div className="bg-porto-primary col-span-8 row-span-6 rounded-3xl">
-                <video autoPlay muted preload="none" className="w-full h-full object-cover rounded-3xl" loop playsInline>
-                    <source src="https://utfs.io/f/a76Xht1N2JVkBZh2LWP7TxpLZqdN3CtAPr8Es9e6kRIcDK1Y" type="video/mp4" />
-                    <span className="flex items-center justify-center">
-                        Your browser does not support the video tag.
-                    </span>
-                </video>
+            <div className="bg-porto-primary col-span-8 row-span-6 rounded-3xl relative">
+                {hasVideo ? (
+                    <video autoPlay muted preload="none" className="w-full h-full object-cover rounded-3xl" loop playsInline>
+                        <source src={project.videoUrl} type="video/mp4" />
+                        <span className="flex items-center justify-center">
+                            Your browser does not support the video tag.
+                        </span>
+                    </video>
+                ) : mainImage && (
+                    <Image
+                        src={mainImage.imageUrl}
+                        alt={mainImage.alt}
+                        objectFit="cover"
+                        fill
+                        style={{ width: '100%', height: '100%' }}
+                        className="rounded-3xl"
+                    />
+                )}
             </div>
-            <div className="flex flex-col justify-between bg-porto-primary col-span-4 row-span-6 rounded-3xl p-6" >
-                <h1 className="font-libre text-[64px] leading-tight font-semibold italic">SIMABA <br />2023</h1>
+            <div className="flex flex-col justify-between bg-porto-primary col-span-4 row-span-6 rounded-3xl p-6 relative">
+                <h1 className="font-libre text-[64px] leading-tight font-semibold italic">{project.title}</h1>
                 <div className="flex w-full justify-end">
                     <ArrowButton text="Web Development" />
                 </div>
             </div>
-            <div className="bg-porto-primary col-span-3 row-span-5 rounded-3xl p-6" >
+            <div className="bg-porto-primary col-span-3 row-span-5 rounded-3xl p-6">
                 <h2 className="font-libre text-[48px] leading-tight font-semibold italic mb-4">About Project</h2>
-                <desc className="text-justify">Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Diam odio fringilla volutpat vitae urna turpis. Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Diam odio fringilla volutpat vitae urna turpis. Lorem ipsum dolor sit amet  volutpat vitae urna turpis. </desc>
+                <desc className="text-justify">{project.desc}</desc>
             </div>
-            <div className="bg-porto-primary col-span-9 row-span-7 rounded-3xl relative" >
-                <Image
-                    src={'https://utfs.io/f/a76Xht1N2JVkMsRzQSdmXsMLZCBjpWho3ySt2uqHrFP54liD'}
-                    alt="Simaba 1"
-                    objectFit="cover"
-                    fill
-                    style={{ width: '100%', height: '100%' }}
-                    className="rounded-3xl"
-                />
-            </div>
-            <div className="bg-porto-primary col-span-3 row-span-7 rounded-3xl relative" >
-                <Image
-                    src={'https://utfs.io/f/a76Xht1N2JVkPdxfhsy6EpK8DvIiU4gXwBLaJGzol3Fsn2mV'}
-                    alt="Simaba 2"
-                    objectFit="cover"
-                    fill
-                    style={{ width: '100%', height: '100%' }}
-                    className="rounded-3xl"
-                />
-            </div>
-            <div className="bg-porto-primary col-span-4 row-span-5 rounded-3xl relative" >
-                <Image
-                    src={'https://utfs.io/f/a76Xht1N2JVkU3lJf1Hxt4NO1MwHpSg6VfhQqP5rAvLoeKcJ'}
-                    alt="Simaba 3"
-                    objectFit="cover"
-                    fill
-                    style={{ width: '100%', height: '100%' }}
-                    className="rounded-3xl"
-                />
-            </div>
-            <div className="bg-porto-primary col-span-5 row-span-5 rounded-3xl relative" >
-                <Image
-                    src={'https://utfs.io/f/a76Xht1N2JVkrXGZcwFisHdgKkSzUwLRY73E8B2CX69Wonvj'}
-                    alt="Simaba 4"
-                    objectFit="cover"
-                    fill
-                    style={{ width: '100%', height: '100%' }}
-                    className="rounded-3xl"
-                />
-            </div>
-            <div className="bg-porto-primary col-span-9 row-span-9 rounded-3xl relative" >
-                <Image
-                    src={'https://utfs.io/f/a76Xht1N2JVkbNpmnvXfVZa2gDkNLH6ORtKuUMTGvzSd4cyP'}
-                    alt="Simaba 5"
-                    objectFit="cover"
-                    fill
-                    style={{ width: '100%', height: '100%' }}
-                    className="rounded-3xl"
-                />
-            </div>
-            <div className="flex flex-col justify-between bg-porto-primary col-span-3 row-span-9 rounded-3xl p-6" >
+            {additionalImages.map((image: IProcessedImage) => renderImage(image))}
+            <div className="flex flex-col justify-between bg-porto-primary col-span-3 row-span-9 rounded-3xl p-6 relative">
                 <h3 className="font-libre text-[64px] leading-tight font-semibold italic">Want to see other things?</h3>
                 <div className="flex w-full justify-end">
-                    <ArrowButton text="Nikahyook" href="/project/nikayook" />
+                    <ArrowButton text={project.nextProject.title} href={project.nextProject.redirectUrl} />
                 </div>
+                <Image
+                    src={FilledCircle}
+                    alt="Background Circle"
+                    style={{ width: '50%', height: '50%' }}
+                    className="absolute bottom-0 left-0"
+                />
             </div>
         </>
     )
