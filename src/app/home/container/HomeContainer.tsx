@@ -26,7 +26,7 @@ export default function HomeContainer() {
                     className="absolute bottom-0 right-0 rounded-br-3xl z-0"
                     style={{ width: '30%', height: '60%' }}
                 />
-                <div className="w-[80%] grid grid-cols-4 grid-rows-4 gap-4 relative">
+                <div className="w-[80%] xl:h-[80%] grid grid-cols-4 grid-rows-4 gap-4 relative">
                     <TechCard
                         icon={<NextJSIcon />}
                         name="Next.Js"
@@ -71,13 +71,12 @@ export default function HomeContainer() {
                 name="Nikahyook"
                 redirectUrl="/project/nikahyook"
                 image={NikahyookHome}
-                colSpan={8}
-                rowSpan={3}
+                className="col-span-8 row-span-3"
                 imageHeight={100}
             />
             <div className="flex flex-col justify-between bg-porto-primary col-span-4 row-span-5 rounded-3xl p-6">
                 <div>
-                    <h1 className="font-libre italic text-[48px] leading-[120%] font-semibold mb-">Ahmad Faiz <br /> Agustianto</h1>
+                    <h1 className="font-libre italic text-[48px] leading-[120%] font-semibold mb-2 xl:mb-4">Ahmad Faiz <br /> Agustianto</h1>
                     <desc>
                         Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Nec suspendisse <strong>porttitor massa accumsan</strong> sed dictum velit tortor.
                     </desc>
@@ -90,16 +89,14 @@ export default function HomeContainer() {
                 name="SIMABA 2023"
                 redirectUrl="/project/simaba"
                 image={SIMABAHome}
-                colSpan={4}
-                rowSpan={4}
+                className="col-span-4 row-span-4"
                 imageHeight={85}
             />
             <ProjectCard
                 name="Kampung Budaya"
                 redirectUrl="/project/kampung-budaya"
                 image={KambudHome}
-                colSpan={4}
-                rowSpan={4}
+                className="col-span-4 row-span-4"
                 imageHeight={85}
             />
         </>

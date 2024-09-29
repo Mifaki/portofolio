@@ -38,7 +38,7 @@ export function useGenerateMetadata({
         },
         twitter: {
             card: 'summary_large_image',
-            title: fullTitle,
+            title: fullTitle,   
             description,
         },
         alternates: {
