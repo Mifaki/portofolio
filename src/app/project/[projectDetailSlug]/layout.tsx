@@ -4,7 +4,7 @@ import { useGenerateMetadata } from "@/shared/usecase/useGenerateMetada";
 import CustomErrorBoundary from "@/shared/container/custom-error-boundary/CustomErrorBoundary";
 
 export const metadata: Metadata = useGenerateMetadata({
-    pageTitle: "Home",
+    pageTitle: "Project",
     description: "Ahmad Faiz's portfolio",
     canonicalPath: "/",
     keywords: [
@@ -22,7 +22,7 @@ export default function HomeLayout({
 }>) {
     return (
         <ErrorBoundary FallbackComponent={CustomErrorBoundary}>
-            <main className="grid grid-cols-12 grid-rows-12 gap-5 w-full h-[calc(100dvh-48px)]">
+            <main className="grid grid-cols-12 grid-rows-24 gap-5 w-full h-[200vh]">
                 {children}
             </main>
         </ErrorBoundary>
