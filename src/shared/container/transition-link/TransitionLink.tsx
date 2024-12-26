@@ -26,6 +26,7 @@ const TransitionLink = ({
     return (
         <a
             onClick={handleClick}
+            href={href}
             {...props}
         >
             {children}

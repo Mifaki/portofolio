@@ -18,7 +18,7 @@ const ProjectCard = ({
 }: IProjectCard) => {
     return (
         <div
-            className={`bg-porto-primary rounded-3xl p-6 relative space-y-2 ${containerProps.className}`}
+            className={`bg-porto-primary rounded-3xl p-6 relative space-y-2 ${containerProps.className} overflow-hidden`}
         >
             <h2 className="font-libre italic text-3xl lg:text-4xl lg:leading-[100%] font-semibold mb-2">
                 {name.split(' ').map((word, index) => (
@@ -38,8 +38,8 @@ const ProjectCard = ({
             <Image
                 src={image}
                 alt={name}
-                className="block lg:hidden absolute bottom-0 right-0 object-cover rounded-br-3xl"
-                style={{ width: '90%', height: `70%` }}
+                className="block lg:hidden absolute -bottom-4 right-0 object-cover rounded-br-3xl"
+                style={{ width: '100%', height: `79%` }}
             />
         </div>
     );
