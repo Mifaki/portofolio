@@ -21,7 +21,7 @@ const TechCard = ({
         tl.current.to(percentageRef.current, {
             innerHTML: percentage,
             duration: 6,
-            ease: "power2.out",
+            ease: "power2.in",
             roundProps: "innerHTML"
         });
     }, [percentage]);
@@ -32,7 +32,7 @@ const TechCard = ({
                 {icon}
                 <p>{name}</p>
             </div> 
-            <p className='font-libre text-4xl font-semibold text-right'>
+            <p className='mt-2 lg:mt-0 font-libre text-3xl lg:text-4xl font-semibold text-right'>
                 <span ref={percentageRef}>0</span>%
             </p>
         </div>
