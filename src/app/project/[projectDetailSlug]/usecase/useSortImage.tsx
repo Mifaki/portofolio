@@ -8,11 +8,11 @@ export function useSortImage(project: IProject) {
     const sortedImages = [...project.images].sort((a, b) => a.position - b.position);
 
     const classNames = [
-      "col-span-9 row-span-7",
-      "col-span-3 row-span-7",
-      "col-span-4 row-span-5",
-      "col-span-5 row-span-5",
-      "col-span-9 row-span-9"
+      "col-span-12 lg:col-span-9 row-span-2 lg:row-span-5",
+      "col-span-12 lg:col-span-3 row-span-5 lg:row-span-5",
+      "col-span-12 lg:col-span-4 row-span-2 lg:row-span-3",
+      "col-span-12 lg:col-span-5 row-span-2 lg:row-span-3",
+      "col-span-12 lg:col-span-9 row-span-2 lg:row-span-5"
     ];
 
     return sortedImages.map((image, index) => ({

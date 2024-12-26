@@ -13,7 +13,7 @@ export const useAnimatePageIn = () => {
     tl.set([bannerOne, bannerTwo, bannerThree, bannerFour], {
       yPercent: 0,
     }).to([bannerOne, bannerTwo, bannerThree, bannerFour], {
-      yPercent: 100,
+      yPercent: 400,
       stagger: 0.2,
     })
   }
@@ -29,7 +29,7 @@ export const useAnimatePageOut = (href: string, router: AppRouterInstance) => {
     const tl = gsap.timeline()
 
     tl.set([bannerOne, bannerTwo, bannerThree, bannerFour], {
-      yPercent: -100,
+      yPercent: -400,
     }).to([bannerOne, bannerTwo, bannerThree, bannerFour], {
       yPercent: 0,
       stagger: 0.2,
