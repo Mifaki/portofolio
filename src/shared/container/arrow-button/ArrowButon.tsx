@@ -46,13 +46,27 @@ const ArrowButton: React.FC<IArrowButton> = ({
             gsap.to(arrow, { x: 0, duration: 0.3, ease: 'power2.in' });
         };
 
+        const handleTouchStart = () => {
+            gsap.to(underline, { width: '100%', duration: 0.3, ease: 'power2.out' });
+            gsap.to(arrow, { x: 5, duration: 0.3, ease: 'power2.out' });
+        };
+
+        const handleTouchEnd = () => {
+            gsap.to(underline, { width: 0, duration: 0.3, ease: 'power2.in' });
+            gsap.to(arrow, { x: 0, duration: 0.3, ease: 'power2.in' });
+        };
+
         container.addEventListener('mouseenter', handleMouseEnter);
         container.addEventListener('mouseleave', handleMouseLeave);
+        container.addEventListener('touchstart', handleTouchStart);
+        container.addEventListener('touchend', handleTouchEnd);
+    
 
         return () => {
-            console.log('Cleanup running');
             container.removeEventListener('mouseenter', handleMouseEnter);
             container.removeEventListener('mouseleave', handleMouseLeave);
+            container.removeEventListener('touchstart', handleTouchStart);
+            container.removeEventListener('touchend', handleTouchEnd);
         };
     }, []);
 
