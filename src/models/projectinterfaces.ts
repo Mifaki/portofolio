@@ -4,7 +4,13 @@ export interface IProject {
     desc: string;
     videoUrl?: string;
     images: IProjectImage[];
+    techStack: IProjectTechStack[];
     nextProject: INextProject
+}
+
+export interface IProjectTechStack {
+    imageUrl: string;
+    name: string;
 }
 
 export interface IProjectImage {

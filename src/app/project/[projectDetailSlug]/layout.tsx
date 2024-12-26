@@ -22,7 +22,7 @@ export default function HomeLayout({
 }>) {
     return (
         <ErrorBoundary FallbackComponent={CustomErrorBoundary}>
-            <main className="grid grid-cols-12 grid-rows-24 gap-5 w-full h-[200vh]">
+            <main className="grid grid-cols-12 [grid-auto-rows:100px] gap-5 w-full h-fit">
                 {children}
             </main>
         </ErrorBoundary>

@@ -6,6 +6,28 @@ export const projects: IProject[] = [
         slug: "simaba",
         desc: "Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Diam odio fringilla volutpat vitae urna turpis. Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Diam odio fringilla volutpat vitae urna turpis. Lorem ipsum dolor sit amet  volutpat vitae urna turpis.",
         videoUrl: "https://utfs.io/f/a76Xht1N2JVkBZh2LWP7TxpLZqdN3CtAPr8Es9e6kRIcDK1Y",
+        techStack: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
+                name: "React"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
+                name: "React"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
+                name: "React"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
+                name: "React"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
+                name: "React"
+            },
+        ],
         images: [
             {
                 imageUrl: "https://utfs.io/f/a76Xht1N2JVkMsRzQSdmXsMLZCBjpWho3ySt2uqHrFP54liD",
