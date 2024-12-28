@@ -17,11 +17,18 @@ const TransitionLink = ({
     const router = useRouter()
     const pathname = usePathname()
 
-    const handleClick = () => {
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        if (href === "#") {
+            e.preventDefault()
+            return
+        }
+
         if (pathname !== href) {
+            e.preventDefault()
             useAnimatePageOut(href, router)
         }
     }
+
 
     return (
         <a

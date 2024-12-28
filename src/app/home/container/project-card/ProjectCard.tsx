@@ -34,12 +34,14 @@ const ProjectCard = ({
                 alt={name}
                 className="hidden lg:block absolute bottom-0 right-0 object-cover rounded-br-3xl"
                 style={{ width: '74%', height: `${imageHeight}%` }}
+                draggable={false}
             />
             <Image
                 src={image}
                 alt={name}
                 className="block lg:hidden absolute -bottom-4 right-0 object-cover rounded-br-3xl"
                 style={{ width: '100%', height: `79%` }}
+                draggable={false}
             />
         </div>
     );

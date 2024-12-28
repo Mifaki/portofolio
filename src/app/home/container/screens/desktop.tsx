@@ -1,22 +1,26 @@
+import AngularIcon from "@/shared/container/icon/AngularIcon";
+import ArrowButton from "@/shared/container/arrow-button/ArrowButon";
+import AuthorImage from '../author-image/AuthorImage';
 import AuthorIMG from '@/assets/author_picture.png';
+import ContactButton from '../contact-button/ContactButton';
 import GithubIcon from "@/shared/container/icon/GithubIcon";
 import GmailIcon from "@/shared/container/icon/GmailIcon";
+import HarverseHome from "@/assets/harverse_home.png"
 import Image from "next/image";
 import KambudHome from '@/assets/kambud_home.png'
 import LinkedinIcon from "@/shared/container/icon/Linkedin";
+import MIIHome from "@/assets/mii_home.png";
 import NextJSIcon from "@/shared/container/icon/NextJSIcon";
 import NikahyookHome from '@/assets/nikahyook_home.png'
 import OutlineCircle from '@/assets/background-outline-circle.png'
-import SIMABAHome from '@/assets/simaba_home.png'
-import ArrowButton from "@/shared/container/arrow-button/ArrowButon";
-import TechCard from '../tech-card/TechCard';
-import ContactButton from '../contact-button/ContactButton';
-import AuthorImage from '../author-image/AuthorImage';
 import ProjectCard from '../project-card/ProjectCard';
+import ReactIcon from "@/shared/container/icon/ReactIcon";
+import SIMABAHome from '@/assets/simaba_home.png'
+import TechCard from '../tech-card/TechCard';
+import TEDHome from "@/assets/ted_home_desktop.png"
+import VueIcon from "@/shared/container/icon/VueIcon";
 
-type Props = {}
-
-const HomeDesktop = (props: Props) => {
+const HomeDesktop = () => {
     return (
         <>
             <div className="bg-porto-primary col-span-5 row-span-5 rounded-3xl p-6 relative overflow-hidden" >
@@ -34,18 +38,18 @@ const HomeDesktop = (props: Props) => {
                         percentage={60}
                     />
                     <TechCard
-                        icon={<NextJSIcon />}
-                        name="Next.Js"
+                        icon={<ReactIcon />}
+                        name="React.Js"
                         percentage={20}
                     />
                     <TechCard
-                        icon={<NextJSIcon />}
-                        name="Next.Js"
+                        icon={<VueIcon />}
+                        name="Vue.Js"
                         percentage={15}
                     />
                     <TechCard
-                        icon={<NextJSIcon />}
-                        name="Next.Js"
+                        icon={<AngularIcon />}
+                        name="Angular.Js"
                         percentage={5}
                     />
                 </div>
@@ -70,8 +74,8 @@ const HomeDesktop = (props: Props) => {
             <AuthorImage image={AuthorIMG} />
             <ProjectCard
                 name="TEDxUb 2025"
-                redirectUrl="/project/nikahyook"
-                image={NikahyookHome}
+                redirectUrl="/project/ted-x-ub-2025"
+                image={TEDHome}
                 className="col-span-8 row-span-3"
                 imageHeight={100}
             />
@@ -79,7 +83,7 @@ const HomeDesktop = (props: Props) => {
                 <div>
                     <h1 className="font-libre italic text-[48px] leading-[120%] font-semibold mb-2 xl:mb-4">Ahmad Faiz <br /> Agustianto</h1>
                     <desc>
-                        Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Nec suspendisse <strong>porttitor massa accumsan</strong> sed dictum velit tortor.
+                        Information Technology student and frontend developer with expertise in modern JavaScript frameworks. Experienced in leading development teams and delivering <strong>high-impact web applications</strong> across multiple successful projects.
                     </desc>
                 </div>
                 <div className="flex w-full justify-end">
@@ -88,22 +92,22 @@ const HomeDesktop = (props: Props) => {
             </div>
             <ProjectCard
                 name="MII"
-                redirectUrl="/project/simaba"
-                image={SIMABAHome}
+                redirectUrl="/project/mii"
+                image={MIIHome}
                 className="col-span-4 row-span-4"
                 imageHeight={80}
             />
             <ProjectCard
                 name="Nikahyook"
-                redirectUrl="/project/kampung-budaya"
-                image={KambudHome}
+                redirectUrl="/project/nikahyook"
+                image={NikahyookHome}
                 className="col-span-4 row-span-4"
                 imageHeight={80}
             />
             <ProjectCard
                 name="Harverse"
-                redirectUrl="/project/simaba"
-                image={SIMABAHome}
+                redirectUrl="/project/Harverse"
+                image={HarverseHome}
                 className="col-span-4 row-span-4"
                 imageHeight={80}
             />

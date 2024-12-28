@@ -30,9 +30,9 @@ const TechCard = ({
         <div className='flex flex-col justify-between bg-porto-accent py-3 px-4 col-span-2 row-span-2'>
             <div className='flex items-center gap-2'>
                 {icon}
-                <p>{name}</p>
+                <p className='text-[14px] md:text-base'>{name}</p>
             </div> 
-            <p className='mt-2 lg:mt-0 font-libre text-3xl lg:text-4xl font-semibold text-right'>
+            <p className='mt-2 lg:mt-0 font-libre text-2xl lg:text-4xl font-semibold text-right'>
                 <span ref={percentageRef}>0</span>%
             </p>
         </div>

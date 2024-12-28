@@ -1,3 +1,4 @@
+import AngularIcon from "@/shared/container/icon/AngularIcon";
 import ArrowButton from "@/shared/container/arrow-button/ArrowButon";
 import AuthorImage from '../author-image/AuthorImage';
 import AuthorIMG from '@/assets/author_picture.png';
@@ -11,8 +12,13 @@ import NextJSIcon from "@/shared/container/icon/NextJSIcon";
 import NikahyookHome from '@/assets/nikahyook_home.png'
 import OutlineCircle from '@/assets/background-outline-circle.png'
 import ProjectCard from '../project-card/ProjectCard';
+import ReactIcon from "@/shared/container/icon/ReactIcon";
 import SIMABAHome from '@/assets/simaba_home.png'
 import TechCard from '../tech-card/TechCard';
+import VueIcon from "@/shared/container/icon/VueIcon";
+import TEDHome from "@/assets/ted_home_mobile.png"
+import MIIHome from "@/assets/mii_home.png"
+import HarverseHome from "@/assets/harverse_home.png"
 
 const HomeMobile = () => {
     return (
@@ -21,8 +27,8 @@ const HomeMobile = () => {
             <div className="flex flex-col justify-between bg-porto-primary col-span-12 row-span-2 rounded-3xl p-6">
                 <div>
                     <h1 className="font-libre italic text-[42px] leading-[120%] font-semibold mb-2 xl:mb-4">Ahmad Faiz <br /> Agustianto</h1>
-                    <desc>
-                        Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Nec suspendisse <strong>porttitor massa accumsan</strong> sed dictum velit tortor.
+                    <desc className="text-[14px]">
+                        Information Technology student and frontend developer with expertise in modern JavaScript frameworks. Experienced in leading development teams and delivering <strong>high-impact web applications</strong> across multiple successful projects.
                     </desc>
                 </div>
                 <div className="flex w-full justify-end">
@@ -35,7 +41,7 @@ const HomeMobile = () => {
                     src={OutlineCircle}
                     alt="Outline Circle"
                     className="absolute bottom-0 right-0 rounded-br-3xl z-0"
-                    style={{ width: '40%', height: '60%' }}
+                    style={{ width: '60%', height: '60%' }}
                 />
                 <div className="w-[90%] xl:h-[80%] grid grid-cols-4 grid-rows-4 gap-4 relative">
                     <TechCard
@@ -44,33 +50,33 @@ const HomeMobile = () => {
                         percentage={60}
                     />
                     <TechCard
-                        icon={<NextJSIcon />}
-                        name="Next.Js"
+                        icon={<ReactIcon />}
+                        name="React.Js"
                         percentage={20}
                     />
                     <TechCard
-                        icon={<NextJSIcon />}
-                        name="Next.Js"
+                        icon={<VueIcon />}
+                        name="Vue.Js"
                         percentage={15}
                     />
                     <TechCard
-                        icon={<NextJSIcon />}
-                        name="Next.Js"
+                        icon={<AngularIcon />}
+                        name="Angular.Js"
                         percentage={5}
                     />
                 </div>
             </div>
             <ProjectCard
                 name="TEDxUB 2025"
-                redirectUrl="/project/simaba"
-                image={SIMABAHome}
+                redirectUrl="/project/ted-x-ub-2025"
+                image={TEDHome}
                 className="col-span-12 row-span-2"
                 imageHeight={80}
             />
             <ProjectCard
                 name="MII"
-                redirectUrl="/project/simaba"
-                image={SIMABAHome}
+                redirectUrl="/project/mii"
+                image={MIIHome}
                 className="col-span-12 row-span-2"
                 imageHeight={80}
             />
@@ -83,8 +89,8 @@ const HomeMobile = () => {
             />
             <ProjectCard
                 name="Harverse"
-                redirectUrl="/project/simaba"
-                image={SIMABAHome}
+                redirectUrl="/project/harverse"
+                image={HarverseHome}
                 className="col-span-12 row-span-2"
                 imageHeight={80}
             />
