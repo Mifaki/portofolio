@@ -7,19 +7,27 @@ import React from "react"
 interface ITransitionLink extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
     href: string
     children: React.ReactNode
+    openInNewTab?: boolean
 }
 
 const TransitionLink = ({
     href,
     children,
+    openInNewTab = false,
     ...props
 }: ITransitionLink) => {
     const router = useRouter()
     const pathname = usePathname()
 
+    const isExternalLink = href.startsWith('http') || href.startsWith('mailto:')
+
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         if (href === "#") {
             e.preventDefault()
+            return
+        }
+
+        if (isExternalLink || openInNewTab) {
             return
         }
 
@@ -29,11 +37,12 @@ const TransitionLink = ({
         }
     }
 
-
     return (
         <a
             onClick={handleClick}
             href={href}
+            target={openInNewTab || isExternalLink ? "_blank" : undefined}
+            rel={openInNewTab || isExternalLink ? "noopener noreferrer" : undefined}
             {...props}
         >
             {children}

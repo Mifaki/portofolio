@@ -66,12 +66,12 @@ const ProjectMobile = ({ project }: { project: IProject }) => {
                             key={idx * 101}
                             className="w-full flex flex-col items-center gap-1 text-center"
                         >
-                            <div className="p-1 bg-white bg-opacity-70 rounded-xl">
+                            <div className="p-3 bg-white bg-opacity-70 rounded-xl">
                                 <Image
                                     src={dx.imageUrl}
                                     alt={dx.name}
-                                    width={50}
-                                    height={50}
+                                    width={32}
+                                    height={32}
                                 />
                             </div>
                             <p className="font-libre text-xs">{dx.name}</p>

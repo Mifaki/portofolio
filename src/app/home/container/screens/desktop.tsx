@@ -106,7 +106,7 @@ const HomeDesktop = () => {
             />
             <ProjectCard
                 name="Harverse"
-                redirectUrl="/project/Harverse"
+                redirectUrl="/project/harverse"
                 image={HarverseHome}
                 className="col-span-4 row-span-4"
                 imageHeight={80}

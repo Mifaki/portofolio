@@ -1,12 +1,22 @@
 "use client"
 
 import { useAnimatePageIn } from "@/shared/usecase/usePageTransition"
-import { useEffect } from "react"
+import { usePathname } from "next/navigation"
+import { useEffect, useRef } from "react"
 
 export default function Template({ children }: { children: React.ReactNode }) {
+
+  const pathname = usePathname()
+  const isFirstRender = useRef(true)
+
   useEffect(() => {
-    useAnimatePageIn()
-  }, [])
+    if (!isFirstRender.current) {
+      useAnimatePageIn()
+    } else {
+      isFirstRender.current = false
+    }
+  }, [pathname])
+
   return (
     <>
       <div

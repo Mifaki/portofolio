@@ -2,6 +2,7 @@ export interface IProject {
     title: string;
     slug: string;
     desc: string;
+    websiteUrl?: string;
     videoUrl?: string;
     images: IProjectImage[];
     techStack: IProjectTechStack[];

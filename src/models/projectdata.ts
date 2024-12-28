@@ -4,28 +4,29 @@ export const projects: IProject[] = [
     {
         title: "SIMABA 2023",
         slug: "simaba",
-        desc: "Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Diam odio fringilla volutpat vitae urna turpis. Lorem ipsum dolor sit amet consectetur. Sapien scelerisque semper enim consequat. Diam odio fringilla volutpat vitae urna turpis. Lorem ipsum dolor sit amet  volutpat vitae urna turpis.",
+        desc: "Student registration and management system for Faculty of Computer Science, University of Brawijaya, streamlining the onboarding process for new students.",
+        websiteUrl: "https://simaba-filkom.ub.ac.id",
         videoUrl: "https://utfs.io/f/a76Xht1N2JVkBZh2LWP7TxpLZqdN3CtAPr8Es9e6kRIcDK1Y",
         techStack: [
             {
-                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
-                name: "React"
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVk9VZPUTuN68mtKdn4lwJEXZaSo2M1Ce3y0WUH",
+                name: "Laravel"
             },
             {
                 imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
                 name: "React"
             },
             {
-                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
-                name: "React"
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkSulrV0K2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                name: "Typescript"
             },
             {
-                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
-                name: "React"
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUqqqhUOHxt4NO1MwHpSg6VfhQqP5rAvLoeKc",
+                name: "Tailwind CSS"
             },
             {
-                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
-                name: "React"
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVk1KVZo8hoGu9KYR8UEAkTt70SpbygzQLsWIx5",
+                name: "Framer Motion"
             },
         ],
         images: [
@@ -56,8 +57,315 @@ export const projects: IProject[] = [
             }
         ],
         nextProject: {
+            title: "Kampung Budaya",
+            redirectUrl: "/project/kampung-budaya"
+        }
+    },
+    {
+        title: "TEDxUB 2025",
+        slug: "ted-x-ub-2025",
+        desc: "Official website for TEDx University of Brawijaya, showcasing speakers and event information for the 2025 conference.",
+        websiteUrl: "https://tedxuniversitasbrawijaya.org",
+        techStack: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkc3TVp1U4WNCHKXqy5xEZAVTnvFiakJbjMYIr",
+                name: "Next.Js"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkSulrV0K2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                name: "Typescript"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUqqqhUOHxt4NO1MwHpSg6VfhQqP5rAvLoeKc",
+                name: "Tailwind CSS"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVk1KVZo8hoGu9KYR8UEAkTt70SpbygzQLsWIx5",
+                name: "Framer Motion"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkcVqI5osU4WNCHKXqy5xEZAVTnvFiakJbjMYI",
+                name: "Shadcn/ui"
+            },
+        ],
+        images: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkyAznCW9s7lSJDL90bhfomMe5dZI8xyAnk4Yg",
+                alt: "Ted 1",
+                position: 1
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkSqbWJ2K2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                alt: "Ted 2",
+                position: 2
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVktC2oV6cF64bLv18u5rSk3HytsiCxNEJVaqoU",
+                alt: "Ted 3",
+                position: 3
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkSVnPXIK2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                alt: "Ted 4",
+                position: 4
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkAsiswAtk93DzBjO5vAWUcahHyVKJfNnplws6",
+                alt: "Ted 5",
+                position: 5
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkEvPQeBzxtYiDAv42cLfbNsnMZm1FqoHQCaKX",
+                alt: "Ted 5",
+                position: 6
+            }
+        ],
+        nextProject: {
+            title: "MII",
+            redirectUrl: "/project/mii"
+        }
+    },
+    {
+        title: "MII",
+        slug: "mii",
+        desc: "Membership management platform for Masyarakat Iktiologi Indonesia, handling registrations, renewals, and member activities.",
+        websiteUrl: "https://iktiologi-indonesia.or.id",
+        techStack: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkc3TVp1U4WNCHKXqy5xEZAVTnvFiakJbjMYIr",
+                name: "Next.Js"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkSulrV0K2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                name: "Typescript"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUqqqhUOHxt4NO1MwHpSg6VfhQqP5rAvLoeKc",
+                name: "Tailwind CSS"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkXOMbKs2BVklPCiMvgZu5o3s8mx07LYJKIF9H",
+                name: "GSAP"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkPpxAshy6EpK8DvIiU4gXwBLaJGzol3Fsn2mV",
+                name: "Antd Design"
+            },
+        ],
+        images: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkRr606ibvsK730UGHdOr5IlSQMA2Na9pzqjxY",
+                alt: "MII 1",
+                position: 1
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkPuNltjOy6EpK8DvIiU4gXwBLaJGzol3Fsn2m",
+                alt: "MII 2",
+                position: 2
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVknwHYbL5gLhvZHPOQIADtoCu4BFgy3rUaMN5E",
+                alt: "MII 3",
+                position: 3
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkYA6v5af1VBC4qfTtaLJMOUlcwRmprhQX56DF",
+                alt: "MII 4",
+                position: 4
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkID0y3RifUjL9EhsorVx07JYg8n62kp5OeSXb",
+                alt: "MII 5",
+                position: 5
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVk0ewWagyEq4pIb97F6cVjmWNOwHZ1EYzanyx5",
+                alt: "MII 6",
+                position: 6
+            }
+        ],
+        nextProject: {
             title: "nikahyook",
             redirectUrl: "/project/nikahyook"
         }
     },
+    {
+        title: "Nikahyook",
+        slug: "nikahyook",
+        desc: "E-commerce platform for wedding preparations, connecting couples with vendors and wedding services.",
+        techStack: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkc3TVp1U4WNCHKXqy5xEZAVTnvFiakJbjMYIr",
+                name: "Next.Js"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
+                name: "React"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkSulrV0K2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                name: "Typescript"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUqqqhUOHxt4NO1MwHpSg6VfhQqP5rAvLoeKc",
+                name: "Tailwind CSS"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkPpxAshy6EpK8DvIiU4gXwBLaJGzol3Fsn2mV",
+                name: "Antd Design"
+            },
+        ],
+        images: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkuBBThsJiEAzQoWpwsPV31hxIr4vcTRXDlNCF",
+                alt: "nikahyook 1",
+                position: 1
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkYsnw02f1VBC4qfTtaLJMOUlcwRmprhQX56DF",
+                alt: "nikahyook 2",
+                position: 2
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUyIbuNHxt4NO1MwHpSg6VfhQqP5rAvLoeKcJ",
+                alt: "nikahyook 3",
+                position: 3
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUyIbuNHxt4NO1MwHpSg6VfhQqP5rAvLoeKcJ",
+                alt: "nikahyook 4",
+                position: 4
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUGERx5Hxt4NO1MwHpSg6VfhQqP5rAvLoeKcJ",
+                alt: "nikahyook 5",
+                position: 5
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkdVnpw10WjOXYV6cL5B3qwCNaeyGtpgTSurRZ",
+                alt: "nikahyook 6",
+                position: 6
+            }
+        ],
+        nextProject: {
+            title: "Harverse",
+            redirectUrl: "/project/harverse"
+        }
+    },
+    {
+        title: "Harverse",
+        slug: "harverse",
+        desc: "Digital marketplace platform connecting local farmers with consumers for sustainable agriculture.",
+        websiteUrl: "https://letharvse.com",
+        techStack: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
+                name: "React"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkSulrV0K2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                name: "Typescript"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUqqqhUOHxt4NO1MwHpSg6VfhQqP5rAvLoeKc",
+                name: "Tailwind CSS"
+            }
+        ],
+        images: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkQz0RZOAFSUP1rfTZ4vyNh2ujBR7DpJH8zWos",
+                alt: "harverse 1",
+                position: 1
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkWTET7OC2R9AwkUYlZQTcjfNoayO3JGdHmL7D",
+                alt: "harverse 2",
+                position: 2
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkaSujkGN2JVkZy0hnrB81NCdLlHsfz5TiDQeR",
+                alt: "harverse 3",
+                position: 3
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVk7yzLVO54QDdLxRmhP8l0ipYNUcw6J1bEAHvO",
+                alt: "harverse 4",
+                position: 4
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkJpBrvkaMr9bxA2Q0leNWwVtXnZhEH6j8Yfqa",
+                alt: "harverse 5",
+                position: 5
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVk8UDSd8wenShRz1yfQ7ABkNH6lJ3osCaPmWZM",
+                alt: "harverse 6",
+                position: 6
+            }
+        ],
+        nextProject: {
+            title: "SIMABA",
+            redirectUrl: "/project/simaba"
+        }
+    },
+    {
+        title: "Kampung Budaya",
+        slug: "kampung-budaya",
+        desc: "Registration and management system for traditional arts competition, featuring dance, music, and cultural performances.",
+        techStack: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkfXoQ00oRYCH3tc0EIRqzopF69js7uPbZdNWm",
+                name: "React"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkSulrV0K2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                name: "Typescript"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVk1KVZo8hoGu9KYR8UEAkTt70SpbygzQLsWIx5",
+                name: "Framer Motion"
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkUqqqhUOHxt4NO1MwHpSg6VfhQqP5rAvLoeKc",
+                name: "Tailwind CSS"
+            }
+        ],
+        images: [
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkDVYZhNnzUQG0pnLJ94rA6kxoq51dZBIiS7CR",
+                alt: "kambud 1",
+                position: 1
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVka8GKbHN2JVkZy0hnrB81NCdLlHsfz5TiDQeR",
+                alt: "kambud 2",
+                position: 2
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkS8h6BeK2ytuBhidLkcJZ1SPFrwRNlqDA75gm",
+                alt: "kambud 3",
+                position: 3
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVktD28oYcF64bLv18u5rSk3HytsiCxNEJVaqoU",
+                alt: "kambud 4",
+                position: 4
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVkFDgwLcSkGUIPW7nNxEf4CKpZymvFRc0Mq59J",
+                alt: "kambud 5",
+                position: 5
+            },
+            {
+                imageUrl: "https://utfs.io/f/a76Xht1N2JVk0YJ2RIEq4pIb97F6cVjmWNOwHZ1EYzanyx5X",
+                alt: "kambud 6",
+                position: 6
+            }
+        ],
+        nextProject: {
+            title: "Home",
+            redirectUrl: "/home"
+        }
+    },
 ]
+

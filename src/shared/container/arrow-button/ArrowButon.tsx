@@ -12,11 +12,13 @@ import TransitionLink from '../transition-link/TransitionLink';
 interface IArrowButton {
     href?: string;
     text?: string;
+    openInNewTab?: boolean;
 }
 
 const ArrowButton: React.FC<IArrowButton> = ({
     href,
-    text = "Explore More"
+    text = "Explore More",
+    openInNewTab = false
 }) => {
 
     const underlineRef = useRef<HTMLSpanElement>(null);
@@ -73,6 +75,7 @@ const ArrowButton: React.FC<IArrowButton> = ({
     return (
         <TransitionLink
             href={href ?? '#'}
+            openInNewTab={openInNewTab}
         >
             <div 
                 ref={containerRef} 
