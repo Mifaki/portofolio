@@ -36,7 +36,7 @@ const HomeMobile = () => {
                 </div>
             </div>
             <div className="bg-porto-primary col-span-12 row-span-2 rounded-3xl p-6 relative overflow-hidden" >
-                <p className="mb-2 relative">Here&apos;s the list of technology i&apos;ve used for entire my 1 Year career as frontend developer</p>
+                <p className="mb-2 relative">Here&apos;s the list of technology i&apos;ve used for entire my <strong>2 Year</strong> career as frontend developer</p>
                 <Image
                     src={OutlineCircle}
                     alt="Outline Circle"
