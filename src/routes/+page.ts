@@ -1,3 +1,16 @@
-// since there's no dynamic data here, we can prerender
-// it so that it gets served as a static asset in production
-export const prerender = true;
+import type { PageLoad } from './$types';
+
+export const load: PageLoad = async ({ fetch }) => {
+
+  const res = await fetch('https://porto-api.ahmad-faiz.my.id/projects');
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch projects');
+  }
+
+  const json = await res.json();
+
+  return {
+    projects: json.data
+  };
+};

@@ -1,8 +1,14 @@
 <script lang="ts">
-	import '../app.css';
+  import '../app.css';
+  import PageLoader from '$lib/components/PageLoader.svelte';
+  import { navigating } from '$app/state';
 
-	let { children } = $props();
+  let { children } = $props();
+
+  let ready = $derived(!navigating.to);
 </script>
+
+<PageLoader {ready} />
 
 <div class="app">
 	<main>
