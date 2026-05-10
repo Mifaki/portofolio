@@ -1,16 +1,20 @@
 <script lang="ts">
-  import '../app.css';
-  import PageLoader from '$lib/components/PageLoader.svelte';
-  import { navigating } from '$app/state';
+	import '../app.css';
+	import PageLoader from '$lib/components/PageLoader.svelte';
+	import { navigating } from '$app/state';
+	import { writable } from 'svelte/store';
+	import Navbar from '$lib/components/Navbar.svelte';
 
-  let { children } = $props();
+	let { children } = $props();
+	let ready = $derived(!navigating.to);
 
-  let ready = $derived(!navigating.to);
+	export const loaderDone = writable(false);
 </script>
 
 <PageLoader {ready} />
 
 <div class="app">
+	<Navbar />
 	<main>
 		{@render children()}
 	</main>
@@ -21,6 +25,7 @@
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
+		overflow: hidden;
 	}
 
 	main {
@@ -29,10 +34,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		padding: 1rem;
 		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
 		box-sizing: border-box;
 	}
 </style>
