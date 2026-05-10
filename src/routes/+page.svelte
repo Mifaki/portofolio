@@ -154,9 +154,6 @@
 	function handleEmblaInit(event: CustomEvent<EmblaCarouselType>) {
 		emblaApi = event.detail;
 		updateCenterProject();
-		emblaApi.on('scroll', updateCenterProject);
-		emblaApi.on('settle', updateCenterProject);
-		emblaApi.on('reInit', updateCenterProject);
 	}
 </script>
 
