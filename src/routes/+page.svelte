@@ -198,18 +198,19 @@
 
 	async function handleImageClick(projectId: string, clickedIndex: number) {
 		if (isDragging) return;
-
 		const img = imageEls[clickedIndex];
 		const wrapper = wrapperEls[clickedIndex];
 		if (!img || !wrapper) {
 			goto(`/project/${projectId}`);
 			return;
 		}
-
 		skipNextLoader.set(true);
-
 		const rect = img.getBoundingClientRect();
 		const targetHeight = window.innerHeight - 112;
+
+		document.documentElement.style.overflowY = 'scroll';
+		const targetWidth = document.documentElement.clientWidth;
+		document.documentElement.style.overflowY = '';
 
 		const ghost = img.cloneNode(true) as HTMLImageElement;
 		gsap.set(ghost, {
@@ -224,7 +225,6 @@
 			pointerEvents: 'none'
 		});
 		document.body.appendChild(ghost);
-
 		gsap.set(wrapper, { visibility: 'hidden' });
 
 		const count = wrapperEls.filter(Boolean).length;
@@ -243,14 +243,14 @@
 		await gsap.to(ghost, {
 			left: 0,
 			top: 112,
-			width: '100vw',
+			width: targetWidth,
 			height: targetHeight,
 			duration: 3,
 			ease: 'power3.inOut'
 		});
 
 		ghost.style.viewTransitionName = 'project-hero';
-
+		
 		if (document.startViewTransition) {
 			const transition = document.startViewTransition(async () => {
 				await goto(`/project/${projectId}`);
@@ -261,7 +261,7 @@
 			});
 
 			transition.finished.finally(() => {
-				ghost.remove(); 
+				ghost.remove();
 			});
 		} else {
 			ghost.remove();
