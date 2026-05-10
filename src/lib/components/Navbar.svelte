@@ -40,13 +40,10 @@
 
 	function toggleMenu() {
 		isOpen = !isOpen;
-
 		if (isOpen) {
 			gsap.to(strip1, { y: 4, rotate: 45, duration: 0.3, ease: 'power2.inOut' });
 			gsap.to(strip2, { y: -4, rotate: -45, duration: 0.3, ease: 'power2.inOut' });
-
 			gsap.set(drawerLinks, { opacity: 0, x: 40 });
-
 			gsap.to(drawerEl, {
 				x: '0%',
 				duration: 0.5,
@@ -64,7 +61,6 @@
 		} else {
 			gsap.to(strip1, { y: 0, rotate: 0, duration: 0.3, ease: 'power2.inOut' });
 			gsap.to(strip2, { y: 0, rotate: 0, duration: 0.3, ease: 'power2.inOut' });
-
 			gsap.to(drawerLinks, {
 				opacity: 0,
 				x: 40,
@@ -83,7 +79,6 @@
 		isOpen = false;
 		gsap.to(strip1, { y: 0, rotate: 0, duration: 0.3, ease: 'power2.inOut' });
 		gsap.to(strip2, { y: 0, rotate: 0, duration: 0.3, ease: 'power2.inOut' });
-
 		gsap.to(drawerLinks, {
 			opacity: 0,
 			x: 40,
@@ -102,11 +97,13 @@
 	});
 </script>
 
-<nav class="flex w-full flex-row items-center justify-between px-8 py-10">
+<nav
+	class="flex w-full flex-row items-center justify-between px-8 py-10"
+	style="view-transition-name: navbar;"
+>
 	<a href="/" class="cursor-pointer">
 		<img src={logo} alt="logo" class="h-8 w-12" />
 	</a>
-
 	<ul class="hidden flex-row gap-10 md:flex">
 		{#each links as link, i}
 			{@const isActive = page.url.pathname === link.href}
@@ -130,7 +127,6 @@
 			</li>
 		{/each}
 	</ul>
-
 	<button
 		class="flex h-8 w-8 flex-col items-center justify-center gap-[6px] md:hidden"
 		onclick={toggleMenu}

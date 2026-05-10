@@ -3,9 +3,10 @@
 	import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 	import type { ProjectImage } from '$lib/types/project';
 	import type { PageProps } from './$types';
-	import { loaderDone } from '$lib/stores/loader';
+	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
 	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
+	import { goto } from '$app/navigation';
 
 	let { data }: PageProps = $props();
 	const projects = [...data.projects, ...data.projects];
@@ -15,6 +16,7 @@
 	let isTransitioning = false;
 
 	let emblaApi: EmblaCarouselType | undefined;
+	let wrapperEls: HTMLDivElement[] = [];
 	let imageEls: HTMLImageElement[] = [];
 	let carouselEl: HTMLDivElement | undefined;
 
@@ -48,7 +50,6 @@
 
 		const toDir = newDir;
 		const { width: toW, height: toH } = DIMS[toDir];
-
 		const savedIndex = emblaApi.selectedScrollSnap();
 
 		const snapshots = imageEls.map((img) => {
@@ -133,20 +134,45 @@
 		activeIndex = closestIndex;
 	}
 
+	function buildRadialOrder(count: number): number[] {
+		const center = Math.floor(count / 2);
+		const order: number[] = [];
+		order.push(center);
+		let left = center - 1;
+		let right = center + 1;
+		while (order.length < count) {
+			if (right < count) order.push(right++);
+			if (left >= 0) order.push(left--);
+		}
+		return order;
+	}
+
 	onMount(() => {
-		gsap.set(imageEls, { y: 60, opacity: 0, scale: 0.92 });
+		const validWrappers = wrapperEls.filter(Boolean);
+
+		gsap.set(validWrappers, { clipPath: 'inset(0% 0% 100% 0%)' });
+
 		const unsub = loaderDone.subscribe((done) => {
 			if (!done) return;
 			unsub();
-			gsap.to(imageEls, {
-				y: 0,
-				opacity: 1,
-				scale: 1,
-				duration: 1,
-				ease: 'power3.out',
-				stagger: 0.08,
-				delay: 0.1
+
+			const count = validWrappers.length;
+			const radialOrder = buildRadialOrder(count);
+
+			const staggerDelays = new Array(count).fill(0);
+			radialOrder.forEach((originalIdx, staggerPos) => {
+				staggerDelays[originalIdx] = staggerPos * 0.2;
 			});
+
+			validWrappers.forEach((wrapper, i) => {
+				gsap.to(wrapper, {
+					clipPath: 'inset(0% 0% 0% 0%)',
+					duration: 1.1,
+					ease: 'power3.out',
+					delay: 0.1 + staggerDelays[i]
+				});
+			});
+
 			requestAnimationFrame(updateCenterProject);
 		});
 	});
@@ -154,6 +180,93 @@
 	function handleEmblaInit(event: CustomEvent<EmblaCarouselType>) {
 		emblaApi = event.detail;
 		updateCenterProject();
+	}
+
+	let isDragging = false;
+	let pointerDownPos = { x: 0, y: 0 };
+
+	function handlePointerDown(e: PointerEvent) {
+		pointerDownPos = { x: e.clientX, y: e.clientY };
+		isDragging = false;
+	}
+
+	function handlePointerMove(e: PointerEvent) {
+		const dx = Math.abs(e.clientX - pointerDownPos.x);
+		const dy = Math.abs(e.clientY - pointerDownPos.y);
+		if (dx > 5 || dy > 5) isDragging = true;
+	}
+
+	async function handleImageClick(projectId: string, clickedIndex: number) {
+		if (isDragging) return;
+
+		const img = imageEls[clickedIndex];
+		const wrapper = wrapperEls[clickedIndex];
+		if (!img || !wrapper) {
+			goto(`/project/${projectId}`);
+			return;
+		}
+
+		skipNextLoader.set(true);
+
+		const rect = img.getBoundingClientRect();
+		const targetHeight = window.innerHeight - 112;
+
+		const ghost = img.cloneNode(true) as HTMLImageElement;
+		gsap.set(ghost, {
+			position: 'fixed',
+			left: rect.left,
+			top: rect.top,
+			width: rect.width,
+			height: rect.height,
+			margin: 0,
+			zIndex: 200,
+			objectFit: 'cover',
+			pointerEvents: 'none'
+		});
+		document.body.appendChild(ghost);
+
+		gsap.set(wrapper, { visibility: 'hidden' });
+
+		const count = wrapperEls.filter(Boolean).length;
+		const radialOrder = buildRadialOrder(count).filter((i) => i !== clickedIndex);
+		radialOrder.forEach((originalIdx, staggerPos) => {
+			const w = wrapperEls[originalIdx];
+			if (!w) return;
+			gsap.to(w, {
+				clipPath: 'inset(100% 0% 0% 0%)',
+				duration: 1,
+				ease: 'power3.in',
+				delay: staggerPos * 0.04
+			});
+		});
+
+		await gsap.to(ghost, {
+			left: 0,
+			top: 112,
+			width: '100vw',
+			height: targetHeight,
+			duration: 3,
+			ease: 'power3.inOut'
+		});
+
+		ghost.style.viewTransitionName = 'project-hero';
+
+		if (document.startViewTransition) {
+			const transition = document.startViewTransition(async () => {
+				await goto(`/project/${projectId}`);
+			});
+
+			transition.ready.then(() => {
+				ghost.remove();
+			});
+
+			transition.finished.finally(() => {
+				ghost.remove(); 
+			});
+		} else {
+			ghost.remove();
+			await goto(`/project/${projectId}`);
+		}
 	}
 </script>
 
@@ -180,25 +293,33 @@
 					class:w-full={direction === 'vertical'}
 					role="listitem"
 				>
-					<img
-						bind:this={imageEls[index]}
-						class="object-cover will-change-transform select-none"
+					<div
+						bind:this={wrapperEls[index]}
+						class="overflow-hidden"
 						class:mr-4={direction === 'horizontal'}
 						class:mb-4={direction === 'vertical'}
 						class:h-[600px]={direction === 'horizontal'}
 						class:w-[400px]={direction === 'horizontal'}
 						class:h-[400px]={direction === 'vertical'}
 						class:w-[500px]={direction === 'vertical'}
-						src={thumbnail.imageUrl}
-						alt={p.title}
-						draggable="false"
-						onmouseenter={() => {
-							activeIndex = index;
-						}}
-						onmouseleave={() => {
-							updateCenterProject();
-						}}
-					/>
+					>
+						<img
+							bind:this={imageEls[index]}
+							class="h-full w-full object-cover will-change-transform select-none"
+							src={thumbnail.imageUrl}
+							alt={p.title}
+							draggable="false"
+							onpointerdown={handlePointerDown}
+							onpointermove={handlePointerMove}
+							onclick={() => handleImageClick(p.id, index)}
+							onmouseenter={() => {
+								activeIndex = index;
+							}}
+							onmouseleave={() => {
+								updateCenterProject();
+							}}
+						/>
+					</div>
 				</div>
 			{/if}
 		{/each}
@@ -208,7 +329,7 @@
 <div class="pointer-events-auto fixed bottom-8 left-8 flex items-center gap-3">
 	<button
 		onclick={() => switchDirection('horizontal')}
-		class="text-xs tracking-[0.2em] uppercase transition-opacity duration-200"
+		class="cursor-pointer text-xs tracking-[0.2em] uppercase transition-opacity duration-200"
 		class:opacity-100={direction === 'horizontal'}
 		class:font-semibold={direction === 'horizontal'}
 		class:opacity-30={direction === 'vertical'}
@@ -218,7 +339,7 @@
 	<span class="text-xs opacity-20">/</span>
 	<button
 		onclick={() => switchDirection('vertical')}
-		class="text-xs tracking-[0.2em] uppercase transition-opacity duration-200"
+		class="cursor-pointer text-xs tracking-[0.2em] uppercase transition-opacity duration-200"
 		class:opacity-100={direction === 'vertical'}
 		class:font-semibold={direction === 'vertical'}
 		class:opacity-30={direction === 'horizontal'}
@@ -228,13 +349,7 @@
 </div>
 
 <div class="pointer-events-none fixed right-8 bottom-8 text-right text-black">
-	<p class="text-xs uppercase opacity-60">
-		{projects[activeIndex]?.category}
-	</p>
-	<h2 class="font-clash text-6xl font-bold">
-		{projects[activeIndex]?.title}
-	</h2>
-	<p class="mt-1 text-sm opacity-60">
-		{projects[activeIndex]?.year}
-	</p>
+	<p class="text-xs uppercase opacity-60">{projects[activeIndex]?.category}</p>
+	<h2 class="font-clash text-6xl font-bold">{projects[activeIndex]?.title}</h2>
+	<p class="mt-1 text-sm opacity-60">{projects[activeIndex]?.year}</p>
 </div>

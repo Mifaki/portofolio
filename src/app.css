@@ -114,3 +114,37 @@ textarea,
 select {
 	font: inherit;
 }
+
+
+::view-transition-old(project-hero),
+::view-transition-new(project-hero) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-group(project-hero) {
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+::view-transition-old(navbar),
+::view-transition-new(navbar) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation: 0.7s cubic-bezier(0.76, 0, 0.24, 1) both vt-clip-out;
+}
+::view-transition-new(root) {
+  animation: 0.7s cubic-bezier(0.76, 0, 0.24, 1) 0.1s both vt-clip-in;
+}
+
+@keyframes vt-clip-out {
+  from { clip-path: inset(0% 0% 0% 0%); }
+  to   { clip-path: inset(100% 0% 0% 0%); }
+}
+@keyframes vt-clip-in {
+  from { clip-path: inset(0% 0% 100% 0%); }
+  to   { clip-path: inset(0% 0% 0% 0%); }
+}
