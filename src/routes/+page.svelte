@@ -4,6 +4,7 @@
 	import type { ProjectImage } from '$lib/types/project';
 	import type { PageProps } from './$types';
 	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
+	import { skipHeroReveal } from '$lib/stores/transition';
 	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
 	import { goto } from '$app/navigation';
@@ -19,6 +20,8 @@
 	let wrapperEls: HTMLDivElement[] = [];
 	let imageEls: HTMLImageElement[] = [];
 	let carouselEl: HTMLDivElement | undefined;
+	let dirButtonsEl: HTMLDivElement | undefined;
+	let textOverlayEl: HTMLDivElement | undefined;
 
 	const DIMS = {
 		horizontal: { width: 400, height: 600 },
@@ -40,7 +43,6 @@
 	});
 
 	$effect(() => {
-		direction;
 		if (emblaApi) emblaApi.reInit(emblaOptions);
 	});
 
@@ -48,8 +50,7 @@
 		if (isTransitioning || newDir === direction || !emblaApi) return;
 		isTransitioning = true;
 
-		const toDir = newDir;
-		const { width: toW, height: toH } = DIMS[toDir];
+		const { width: toW, height: toH } = DIMS[newDir];
 		const savedIndex = emblaApi.selectedScrollSnap();
 
 		const snapshots = imageEls.map((img) => {
@@ -78,7 +79,7 @@
 
 		gsap.set(imageEls.filter(Boolean), { visibility: 'hidden' });
 
-		direction = toDir;
+		direction = newDir;
 		await tick();
 		emblaApi.reInit(emblaOptions);
 		await tick();
@@ -205,12 +206,22 @@
 			return;
 		}
 		skipNextLoader.set(true);
+		skipHeroReveal.set(true);
+
+		gsap.to([dirButtonsEl, textOverlayEl].filter(Boolean), {
+			opacity: 0,
+			duration: 0.35,
+			ease: 'power2.out'
+		});
+
 		const rect = img.getBoundingClientRect();
 		const targetHeight = window.innerHeight - 112;
 
 		document.documentElement.style.overflowY = 'scroll';
-		const targetWidth = document.documentElement.clientWidth;
+		const clientWidth = document.documentElement.clientWidth;
 		document.documentElement.style.overflowY = '';
+
+		const panelWidth = clientWidth * 0.6;
 
 		const ghost = img.cloneNode(true) as HTMLImageElement;
 		gsap.set(ghost, {
@@ -243,9 +254,15 @@
 		await gsap.to(ghost, {
 			left: 0,
 			top: 112,
-			width: targetWidth,
+			width: clientWidth,
 			height: targetHeight,
-			duration: 3,
+			duration: 2.0,
+			ease: 'power3.inOut'
+		});
+
+		await gsap.to(ghost, {
+			width: panelWidth,
+			duration: 1.1,
 			ease: 'power3.inOut'
 		});
 
@@ -326,7 +343,7 @@
 	</div>
 </div>
 
-<div class="pointer-events-auto fixed bottom-8 left-8 flex items-center gap-3">
+<div bind:this={dirButtonsEl} class="pointer-events-auto fixed bottom-8 left-8 flex items-center gap-3">
 	<button
 		onclick={() => switchDirection('horizontal')}
 		class="cursor-pointer text-xs tracking-[0.2em] uppercase transition-opacity duration-200"
@@ -348,7 +365,7 @@
 	</button>
 </div>
 
-<div class="pointer-events-none fixed right-8 bottom-8 text-right text-black">
+<div bind:this={textOverlayEl} class="pointer-events-none fixed right-8 bottom-8 text-right text-black">
 	<p class="text-xs uppercase opacity-60">{projects[activeIndex]?.category}</p>
 	<h2 class="font-clash text-6xl font-bold">{projects[activeIndex]?.title}</h2>
 	<p class="mt-1 text-sm opacity-60">{projects[activeIndex]?.year}</p>
