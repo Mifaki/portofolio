@@ -4,6 +4,7 @@
 	import { navigating } from '$app/state';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { loaderDone } from '$lib/stores/loader';
+	import { lenisInstance } from '$lib/stores/lenis';
 	import { onMount } from 'svelte';
 	import Lenis from 'lenis';
 
@@ -24,6 +25,7 @@
 		}
 		requestAnimationFrame(raf);
 
+		lenisInstance.set(lenis);
 		lenis.stop();
 		const unsub = loaderDone.subscribe((done) => {
 			if (done) lenis.start();
@@ -31,6 +33,7 @@
 
 		return () => {
 			unsub();
+			lenisInstance.set(null);
 			lenis.destroy();
 		};
 	});

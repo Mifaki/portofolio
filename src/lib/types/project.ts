@@ -11,6 +11,12 @@ export interface ProjectText {
 	content: string;
 }
 
+export interface NextProject {
+	id: string;
+	title: string;
+	thumbnailUrl: string | null;
+}
+
 export interface Project {
 	id: string;
 	position: number;
@@ -22,6 +28,7 @@ export interface Project {
 	modifiedAt: string;
 	texts: ProjectText[];
 	images: ProjectImage[];
+	nextProject?: NextProject | null;
 }
 
 export type SoloLandscape = { type: 'solo-landscape'; img: ProjectImage; side: 'left' | 'right' };
