@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
 
 	interface Props {
@@ -12,6 +13,11 @@
 	let exiting = false;
 
 	const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+	onMount(() => {
+		window.scrollTo(0, 0);
+		setTimeout(() => window.scrollTo(0, 0), 0);
+	});
 
 	$effect(() => {
 		if (!ready) {
@@ -31,6 +37,7 @@
 			slideOut = false;
 			exiting = false;
 			loaderDone.set(false);
+			window.scrollTo(0, 0);
 		}
 	});
 
