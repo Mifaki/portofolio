@@ -7,7 +7,7 @@
 	import { skipHeroReveal } from '$lib/stores/transition';
 	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
-	import { goto } from '$app/navigation';
+	import { goto, preloadData } from '$app/navigation';
 
 	let { data }: PageProps = $props();
 	const projects = [...data.projects, ...data.projects];
@@ -207,6 +207,7 @@
 		}
 		skipNextLoader.set(true);
 		skipHeroReveal.set(true);
+		preloadData(`/project/${projectId}`).catch(() => {});
 
 		gsap.to([dirButtonsEl, textOverlayEl].filter(Boolean), {
 			opacity: 0,
@@ -266,24 +267,9 @@
 			ease: 'power3.inOut'
 		});
 
-		ghost.style.viewTransitionName = 'project-hero';
-		
-		if (document.startViewTransition) {
-			const transition = document.startViewTransition(async () => {
-				await goto(`/project/${projectId}`);
-			});
-
-			transition.ready.then(() => {
-				ghost.remove();
-			});
-
-			transition.finished.finally(() => {
-				ghost.remove();
-			});
-		} else {
-			ghost.remove();
-			await goto(`/project/${projectId}`);
-		}
+		await goto(`/project/${projectId}`);
+		await gsap.to(ghost, { opacity: 0, duration: 0.4, ease: 'power2.out' });
+		ghost.remove();
 	}
 </script>
 

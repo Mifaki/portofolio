@@ -97,10 +97,7 @@
 	});
 </script>
 
-<nav
-	class="flex w-full flex-row items-center justify-between px-8 py-10"
-	style="view-transition-name: navbar;"
->
+<nav class="flex w-full flex-row items-center justify-between px-8 py-10">
 	<a href="/" class="cursor-pointer">
 		<img src={logo} alt="logo" class="h-8 w-12" />
 	</a>

@@ -2,7 +2,7 @@
 	import type { PageProps } from './$types';
 	import type { ProjectImage } from '$lib/types/project';
 	import { onMount, tick } from 'svelte';
-	import { afterNavigate, goto } from '$app/navigation';
+	import { afterNavigate, goto, preloadData } from '$app/navigation';
 	import { get } from 'svelte/store';
 	import gsap from 'gsap';
 	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
@@ -189,17 +189,6 @@ function easeInOutCubic(t: number): number {
 	}
 
 	onMount(() => {
-		if (!imgPanelEl || !morphPanelEl || !titleEl || !categoryRowEl || !yearEl || !cContentEl)
-			return;
-
-		const fromHome = get(skipHeroReveal);
-		if (fromHome) {
-			skipHeroReveal.set(false);
-			window.scrollTo(0, 0);
-		}
-
-		setupPage(fromHome);
-
 		let rafId: number;
 		const onScroll = () => {
 			cancelAnimationFrame(rafId);
@@ -215,8 +204,6 @@ function easeInOutCubic(t: number): number {
 	});
 
 	afterNavigate(async ({ from }) => {
-		if (!from) return;
-
 		await tick();
 
 		if (!imgPanelEl || !morphPanelEl || !titleEl || !categoryRowEl || !yearEl || !cContentEl)
@@ -224,6 +211,11 @@ function easeInOutCubic(t: number): number {
 
 		const fromHome = get(skipHeroReveal);
 		if (fromHome) skipHeroReveal.set(false);
+
+		if (!from) {
+			setupPage(fromHome);
+			return;
+		}
 
 		window.scrollTo(0, 0);
 		entranceDone = false;
@@ -249,6 +241,7 @@ function easeInOutCubic(t: number): number {
 
 		skipNextLoader.set(true);
 		skipHeroReveal.set(true);
+		preloadData(`/project/${nextId}`).catch(() => {});
 
 		const { left, top, width, height } = nextImgEl.getBoundingClientRect();
 
@@ -365,7 +358,7 @@ function easeInOutCubic(t: number): number {
 >
 	{#if thumbnail}
 		<img
-			class="h-full w-full object-cover [view-transition-name:project-hero]"
+			class="h-full w-full object-cover"
 			src={thumbnail.imageUrl}
 			alt={project.title}
 		/>
