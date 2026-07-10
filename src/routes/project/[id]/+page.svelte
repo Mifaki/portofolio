@@ -8,11 +8,49 @@
 	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
 	import { skipHeroReveal } from '$lib/stores/transition';
 	import { lenisInstance } from '$lib/stores/lenis';
+	import { isBlurredProject, blurImage, BLUR_PLACEHOLDER } from '$lib/utils/blurImage';
+	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
 
 	let { data }: PageProps = $props();
 	const project = $derived(data.project);
 	const thumbnail = $derived(project.images.find((img: ProjectImage) => img.type === 'thumbnail'));
 	const gallery = $derived(project.images.filter((img: ProjectImage) => img.type !== 'thumbnail'));
+	const isPrivate = $derived(project.visibility === 'private');
+
+	let blurredSrc = $state<string>();
+	let nextBlurredSrc = $state<string>();
+
+	const thumbnailSrc = $derived(
+		isBlurredProject(project) ? (blurredSrc ?? BLUR_PLACEHOLDER) : thumbnail?.imageUrl
+	);
+	const nextThumbnailSrc = $derived(
+		project.nextProject && isBlurredProject(project.nextProject)
+			? (nextBlurredSrc ?? BLUR_PLACEHOLDER)
+			: project.nextProject?.thumbnailUrl
+	);
+
+	$effect(() => {
+		blurredSrc = undefined;
+		if (!thumbnail || !isBlurredProject(project)) return;
+		const url = thumbnail.imageUrl;
+		blurImage(url)
+			.then((src) => {
+				if (thumbnail?.imageUrl === url) blurredSrc = src;
+			})
+			.catch(() => {});
+	});
+
+	$effect(() => {
+		nextBlurredSrc = undefined;
+		const next = project.nextProject;
+		if (!next?.thumbnailUrl || !isBlurredProject(next)) return;
+		const url = next.thumbnailUrl;
+		blurImage(url)
+			.then((src) => {
+				if (project.nextProject?.thumbnailUrl === url) nextBlurredSrc = src;
+			})
+			.catch(() => {});
+	});
 
 	let imgPanelEl: HTMLDivElement | undefined = $state();
 	let morphPanelEl: HTMLDivElement | undefined = $state();
@@ -35,7 +73,7 @@
 	let isWrapped = true;
 	let unsubLoader: (() => void) | undefined;
 
-function easeInOutCubic(t: number): number {
+	function easeInOutCubic(t: number): number {
 		return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 	}
 
@@ -222,7 +260,16 @@ function easeInOutCubic(t: number): number {
 		isWrapped = true;
 
 		gsap.killTweensOf(
-			[imgPanelEl, morphPanelEl, titleEl, categoryRowEl, yearEl, introEl, metaGroupEl, cContentEl].filter(Boolean)
+			[
+				imgPanelEl,
+				morphPanelEl,
+				titleEl,
+				categoryRowEl,
+				yearEl,
+				introEl,
+				metaGroupEl,
+				cContentEl
+			].filter(Boolean)
 		);
 
 		gsap.set(imgPanelEl!, { opacity: 1, width: '60%', clipPath: 'inset(0% 0% 0% 0%)' });
@@ -245,16 +292,17 @@ function easeInOutCubic(t: number): number {
 
 		const { left, top, width, height } = nextImgEl.getBoundingClientRect();
 
-		document.documentElement.style.overflowY = 'scroll';
-		const clientWidth = document.documentElement.clientWidth;
-		document.documentElement.style.overflowY = '';
+		const clientWidth = measureScrollbarAccountedWidth();
 
 		const panelWidth = clientWidth * 0.6;
 
 		const ghost = nextImgEl.cloneNode(true) as HTMLImageElement;
 		gsap.set(ghost, {
 			position: 'fixed',
-			left, top, width, height,
+			left,
+			top,
+			width,
+			height,
 			margin: 0,
 			zIndex: 200,
 			objectFit: 'cover',
@@ -264,13 +312,26 @@ function easeInOutCubic(t: number): number {
 		document.body.appendChild(ghost);
 		gsap.set(nextImgEl, { visibility: 'hidden' });
 
-		await gsap.to(ghost, { left: 0, top: 0, width: clientWidth, height: window.innerHeight, duration: 2.0, ease: 'power3.inOut' });
+		await gsap.to(ghost, {
+			left: 0,
+			top: 0,
+			width: clientWidth,
+			height: window.innerHeight,
+			duration: 2.0,
+			ease: 'power3.inOut'
+		});
 
 		gsap.set([imgPanelEl, morphPanelEl, cContentEl].filter(Boolean), { opacity: 0 });
 
 		get(lenisInstance)?.scrollTo(0, { immediate: true });
 
-		await gsap.to(ghost, { top: 112, height: window.innerHeight - 112, width: panelWidth, duration: 1.1, ease: 'power3.inOut' });
+		await gsap.to(ghost, {
+			top: 112,
+			height: window.innerHeight - 112,
+			width: panelWidth,
+			duration: 1.1,
+			ease: 'power3.inOut'
+		});
 
 		await goto(`/project/${nextId}`);
 		await gsap.to(ghost, { opacity: 0, duration: 0.4, ease: 'power2.out' });
@@ -284,38 +345,35 @@ function easeInOutCubic(t: number): number {
 	<div bind:this={cContentEl} class="ml-52 px-12 pt-12 pb-40 opacity-0">
 		{#if thumbnail}
 			<div class="mb-16">
-				<img
-		
-					class="aspect-video w-full object-cover"
-					src={thumbnail.imageUrl}
-					alt={project.title}
-				/>
+				<img class="aspect-video w-full object-cover" src={thumbnailSrc} alt={project.title} />
 			</div>
 		{/if}
 
-		{#if project.texts.length > 0}
+		{#if isPrivate}
+			<div class="max-w-4xl pt-4 pb-24">
+				<p class="mb-5 text-xs tracking-[0.4em] uppercase opacity-30">Private Project</p>
+				<h3 class="font-clash mb-10 text-5xl leading-tight font-bold text-balance">
+					This one stays behind closed doors.
+				</h3>
+				<p class="max-w-xl text-xl leading-loose opacity-75">
+					I'm really sorry I can't share more screenshots or details for this project due to its
+					private nature. I still wanted to include it here because I'm really proud of the work —
+					if we ever get to chat, I'd be happy to walk you through what I can.
+				</p>
+			</div>
+		{:else if project.texts.length > 0}
 			<div class="mb-20 max-w-xl">
 				<p class="text-xl leading-loose opacity-75">{project.texts[0].content}</p>
 			</div>
 		{/if}
 
-		{#each gallery as img, i}
+		{#each isPrivate ? [] : gallery as img, i}
 			<div class="mb-10">
 				{#if img.orientation === 'landscape'}
-					<img
-			
-						class="aspect-video w-full object-cover"
-						src={img.imageUrl}
-						alt={project.title}
-					/>
+					<img class="aspect-video w-full object-cover" src={img.imageUrl} alt={project.title} />
 				{:else}
 					<div class="flex" class:justify-end={i % 2 !== 0}>
-						<img
-				
-							class="aspect-3/4 w-[52%] object-cover"
-							src={img.imageUrl}
-							alt={project.title}
-						/>
+						<img class="aspect-3/4 w-[52%] object-cover" src={img.imageUrl} alt={project.title} />
 					</div>
 				{/if}
 			</div>
@@ -330,9 +388,11 @@ function easeInOutCubic(t: number): number {
 		{#if project.nextProject?.thumbnailUrl}
 			<div class="mt-40 border-t border-black/10 pt-16 pb-0">
 				<p class="mb-5 text-xs tracking-[0.4em] uppercase opacity-30">Next</p>
-				<h3 class="font-clash mb-10 text-5xl font-bold leading-none">{project.nextProject.title}</h3>
+				<h3 class="font-clash mb-10 text-5xl leading-none font-bold">
+					{project.nextProject.title}
+				</h3>
 				<div
-					class="overflow-hidden cursor-pointer"
+					class="cursor-pointer overflow-hidden"
 					role="button"
 					tabindex="0"
 					onclick={() => handleNextProjectClick(project.nextProject!.id)}
@@ -340,9 +400,8 @@ function easeInOutCubic(t: number): number {
 				>
 					<img
 						bind:this={nextImgEl}
-			
 						class="aspect-video w-full object-cover select-none"
-						src={project.nextProject.thumbnailUrl}
+						src={nextThumbnailSrc}
 						alt={project.nextProject.title}
 						draggable="false"
 					/>
@@ -357,11 +416,7 @@ function easeInOutCubic(t: number): number {
 	class="fixed top-[112px] left-0 z-10 h-[calc(100vh-112px)] w-[60%] overflow-hidden"
 >
 	{#if thumbnail}
-		<img
-			class="h-full w-full object-cover"
-			src={thumbnail.imageUrl}
-			alt={project.title}
-		/>
+		<img class="h-full w-full object-cover" src={thumbnailSrc} alt={project.title} />
 	{/if}
 </div>
 
@@ -372,6 +427,13 @@ function easeInOutCubic(t: number): number {
 	<div bind:this={categoryRowEl} class="absolute top-[56px] left-[56px] flex items-center gap-5">
 		<div class="h-px w-7 shrink-0 bg-black/25"></div>
 		<span class="tracking-[0.3em] uppercase opacity-40">{project.category}</span>
+		{#if isPrivate}
+			<span
+				class="border border-black/20 px-2.5 py-1 text-[10px] tracking-[0.3em] uppercase opacity-50"
+			>
+				Private
+			</span>
+		{/if}
 	</div>
 
 	<h1 bind:this={titleEl} class="font-clash absolute top-1/2 left-1/2 leading-none font-bold">

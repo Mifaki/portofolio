@@ -15,6 +15,8 @@ export interface NextProject {
 	id: string;
 	title: string;
 	thumbnailUrl: string | null;
+	visibility?: 'public' | 'private';
+	blur?: boolean;
 }
 
 export interface Project {
@@ -23,6 +25,8 @@ export interface Project {
 	title: string;
 	category: string;
 	type: string;
+	visibility: 'public' | 'private';
+	blur: boolean;
 	year: string;
 	createdAt: string;
 	modifiedAt: string;
@@ -30,28 +34,3 @@ export interface Project {
 	images: ProjectImage[];
 	nextProject?: NextProject | null;
 }
-
-export type SoloLandscape = { type: 'solo-landscape'; img: ProjectImage; side: 'left' | 'right' };
-export type SoloPortrait = { type: 'solo-portrait'; img: ProjectImage; side: 'left' | 'right' };
-export type PortraitPair = { type: 'portrait-pair'; imgs: ProjectImage[] };
-export type PortraitTriple = {
-	type: 'portrait-triple';
-	imgs: ProjectImage[];
-	variant: 'wide-left' | 'wide-mid';
-};
-export type LandscapePortrait = {
-	type: 'landscape-portrait';
-	landscape: ProjectImage;
-	portrait: ProjectImage;
-};
-
-export type ImageScene =
-	| SoloLandscape
-	| SoloPortrait
-	| PortraitPair
-	| PortraitTriple
-	| LandscapePortrait;
-
-export type TextBlock = { kind: 'text'; content: string; align: 'left' | 'right' };
-export type SceneBlock = { kind: 'scene'; scene: ImageScene };
-export type Block = SceneBlock | TextBlock;

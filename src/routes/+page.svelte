@@ -5,6 +5,8 @@
 	import type { PageProps } from './$types';
 	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
 	import { skipHeroReveal } from '$lib/stores/transition';
+	import { isBlurredProject, blurImage, BLUR_PLACEHOLDER } from '$lib/utils/blurImage';
+	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
 	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
 	import { goto, preloadData } from '$app/navigation';
@@ -12,6 +14,7 @@
 	let { data }: PageProps = $props();
 	const projects = [...data.projects, ...data.projects];
 	let activeIndex = $state(0);
+	let blurredSrcs = $state<Record<string, string>>({});
 
 	let direction = $state<'horizontal' | 'vertical'>('horizontal');
 	let isTransitioning = false;
@@ -19,7 +22,6 @@
 	let emblaApi: EmblaCarouselType | undefined;
 	let wrapperEls: HTMLDivElement[] = [];
 	let imageEls: HTMLImageElement[] = [];
-	let carouselEl: HTMLDivElement | undefined;
 	let dirButtonsEl: HTMLDivElement | undefined;
 	let textOverlayEl: HTMLDivElement | undefined;
 
@@ -149,6 +151,16 @@
 	}
 
 	onMount(() => {
+		for (const p of data.projects) {
+			const thumb = p.images.find((img: ProjectImage) => img.type === 'thumbnail');
+			if (!thumb || !isBlurredProject(p)) continue;
+			blurImage(thumb.imageUrl)
+				.then((src) => {
+					blurredSrcs[thumb.imageUrl] = src;
+				})
+				.catch(() => {});
+		}
+
 		const validWrappers = wrapperEls.filter(Boolean);
 
 		gsap.set(validWrappers, { clipPath: 'inset(0% 0% 100% 0%)' });
@@ -218,9 +230,7 @@
 		const rect = img.getBoundingClientRect();
 		const targetHeight = window.innerHeight - 112;
 
-		document.documentElement.style.overflowY = 'scroll';
-		const clientWidth = document.documentElement.clientWidth;
-		document.documentElement.style.overflowY = '';
+		const clientWidth = measureScrollbarAccountedWidth();
 
 		const panelWidth = clientWidth * 0.6;
 
@@ -274,7 +284,6 @@
 </script>
 
 <div
-	bind:this={carouselEl}
 	class="flex h-screen w-full cursor-pointer items-center justify-center active:cursor-grabbing"
 	class:h-screen={direction === 'vertical'}
 	use:emblaCarouselSvelte={emblaConfig}
@@ -309,7 +318,9 @@
 						<img
 							bind:this={imageEls[index]}
 							class="h-full w-full object-cover will-change-transform select-none"
-							src={thumbnail.imageUrl}
+							src={isBlurredProject(p)
+								? (blurredSrcs[thumbnail.imageUrl] ?? BLUR_PLACEHOLDER)
+								: thumbnail.imageUrl}
 							alt={p.title}
 							draggable="false"
 							onpointerdown={handlePointerDown}
@@ -329,7 +340,10 @@
 	</div>
 </div>
 
-<div bind:this={dirButtonsEl} class="pointer-events-auto fixed bottom-8 left-8 flex items-center gap-3">
+<div
+	bind:this={dirButtonsEl}
+	class="pointer-events-auto fixed bottom-8 left-8 flex items-center gap-3"
+>
 	<button
 		onclick={() => switchDirection('horizontal')}
 		class="cursor-pointer text-xs tracking-[0.2em] uppercase transition-opacity duration-200"
@@ -351,7 +365,10 @@
 	</button>
 </div>
 
-<div bind:this={textOverlayEl} class="pointer-events-none fixed right-8 bottom-8 text-right text-black">
+<div
+	bind:this={textOverlayEl}
+	class="pointer-events-none fixed right-8 bottom-8 text-right text-black"
+>
 	<p class="text-xs uppercase opacity-60">{projects[activeIndex]?.category}</p>
 	<h2 class="font-clash text-6xl font-bold">{projects[activeIndex]?.title}</h2>
 	<p class="mt-1 text-sm opacity-60">{projects[activeIndex]?.year}</p>
