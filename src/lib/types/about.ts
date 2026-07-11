@@ -37,6 +37,7 @@ export interface About {
 	instagram: string | null;
 	github: string | null;
 	linkedin: string | null;
+	resumeUrl: string | null;
 	createdAt: string;
 	modifiedAt: string;
 	descriptions: AboutDescription[];

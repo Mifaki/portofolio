@@ -11,6 +11,7 @@
 	let { ready = false }: Props = $props();
 
 	let visible = $state(true);
+	let showSlowMessage = $state(false);
 	let paused = $state(false);
 	let slideIn = $state(false);
 	let slideOut = $state(false);
@@ -43,6 +44,15 @@
 
 	$effect(() => {
 		if (!ready) untrack(handleNavStart);
+	});
+
+	$effect(() => {
+		if (!visible) {
+			showSlowMessage = false;
+			return;
+		}
+		const timeoutId = setTimeout(() => (showSlowMessage = true), 6000);
+		return () => clearTimeout(timeoutId);
 	});
 
 	function handleNavStart() {
@@ -185,6 +195,9 @@
 				/>
 			</g>
 		</svg>
+		<p class="slow-message" class:show={showSlowMessage}>
+			Taking longer than expected, hang tight
+		</p>
 	</div>
 {/if}
 
@@ -204,6 +217,21 @@
 	.overlay.slide-out {
 		transform: translateY(-100%);
 		pointer-events: none;
+	}
+	.slow-message {
+		position: absolute;
+		bottom: 18%;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 11px;
+		letter-spacing: 0.4em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		opacity: 0;
+		transition: opacity 0.8s ease;
+	}
+	.slow-message.show {
+		opacity: 0.4;
 	}
 	.paused :global(.fill-circle),
 	.paused :global(.fill-bar) {

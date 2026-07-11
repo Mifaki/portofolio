@@ -159,7 +159,7 @@
 					<p bind:this={descEls[i]} class="text-lg leading-relaxed opacity-60">{desc.content}</p>
 				{/each}
 			</div>
-			{#if about.github || about.linkedin || about.instagram}
+			{#if about.github || about.linkedin || about.instagram || about.resumeUrl}
 				<div bind:this={socialEl} class="mt-12 flex items-center gap-6">
 					{#if about.github}
 						<a href={about.github} target="_blank" rel="noopener noreferrer"
@@ -174,6 +174,11 @@
 						<span class="text-xs opacity-20">/</span>
 						<a href={about.instagram} target="_blank" rel="noopener noreferrer"
 							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100">Instagram</a>
+					{/if}
+					{#if about.resumeUrl}
+						<span class="text-xs opacity-20">/</span>
+						<a href={about.resumeUrl} target="_blank" rel="noopener noreferrer"
+							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100">Resume</a>
 					{/if}
 				</div>
 			{/if}
