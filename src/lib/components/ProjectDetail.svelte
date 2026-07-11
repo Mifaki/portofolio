@@ -7,7 +7,6 @@
 	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
 	import { skipHeroReveal } from '$lib/stores/transition';
 	import { lenisInstance } from '$lib/stores/lenis';
-	import { isBlurredProject, blurImage, BLUR_PLACEHOLDER } from '$lib/utils/blurImage';
 	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
 
 	interface Props {
@@ -19,40 +18,8 @@
 	const gallery = $derived(project.images.filter((img: ProjectImage) => img.type !== 'thumbnail'));
 	const isPrivate = $derived(project.visibility === 'private');
 
-	let blurredSrc = $state<string>();
-	let nextBlurredSrc = $state<string>();
-
-	const thumbnailSrc = $derived(
-		isBlurredProject(project) ? (blurredSrc ?? BLUR_PLACEHOLDER) : thumbnail?.imageUrl
-	);
-	const nextThumbnailSrc = $derived(
-		project.nextProject && isBlurredProject(project.nextProject)
-			? (nextBlurredSrc ?? BLUR_PLACEHOLDER)
-			: project.nextProject?.thumbnailUrl
-	);
-
-	$effect(() => {
-		blurredSrc = undefined;
-		if (!thumbnail || !isBlurredProject(project)) return;
-		const url = thumbnail.imageUrl;
-		blurImage(url)
-			.then((src) => {
-				if (thumbnail?.imageUrl === url) blurredSrc = src;
-			})
-			.catch(() => {});
-	});
-
-	$effect(() => {
-		nextBlurredSrc = undefined;
-		const next = project.nextProject;
-		if (!next?.thumbnailUrl || !isBlurredProject(next)) return;
-		const url = next.thumbnailUrl;
-		blurImage(url)
-			.then((src) => {
-				if (project.nextProject?.thumbnailUrl === url) nextBlurredSrc = src;
-			})
-			.catch(() => {});
-	});
+	const thumbnailSrc = $derived(thumbnail?.imageUrl);
+	const nextThumbnailSrc = $derived(project.nextProject?.thumbnailUrl);
 
 	let imgPanelEl: HTMLDivElement | undefined = $state();
 	let morphPanelEl: HTMLDivElement | undefined = $state();

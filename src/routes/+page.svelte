@@ -5,7 +5,6 @@
 	import type { PageProps } from './$types';
 	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
 	import { skipHeroReveal } from '$lib/stores/transition';
-	import { isBlurredProject, blurImage, BLUR_PLACEHOLDER } from '$lib/utils/blurImage';
 	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
 	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
@@ -14,7 +13,6 @@
 	let { data }: PageProps = $props();
 	const projects = [...data.projects, ...data.projects];
 	let activeIndex = $state(0);
-	let blurredSrcs = $state<Record<string, string>>({});
 
 	let direction = $state<'horizontal' | 'vertical'>('horizontal');
 	let isTransitioning = false;
@@ -151,16 +149,6 @@
 	}
 
 	onMount(() => {
-		for (const p of data.projects) {
-			const thumb = p.images.find((img: ProjectImage) => img.type === 'thumbnail');
-			if (!thumb || !isBlurredProject(p)) continue;
-			blurImage(thumb.imageUrl)
-				.then((src) => {
-					blurredSrcs[thumb.imageUrl] = src;
-				})
-				.catch(() => {});
-		}
-
 		const validWrappers = wrapperEls.filter(Boolean);
 
 		gsap.set(validWrappers, { clipPath: 'inset(0% 0% 100% 0%)' });
@@ -318,9 +306,7 @@
 						<img
 							bind:this={imageEls[index]}
 							class="h-full w-full object-cover will-change-transform select-none"
-							src={isBlurredProject(p)
-								? (blurredSrcs[thumbnail.imageUrl] ?? BLUR_PLACEHOLDER)
-								: thumbnail.imageUrl}
+							src={thumbnail.imageUrl}
 							alt={p.title}
 							draggable="false"
 							onpointerdown={handlePointerDown}
