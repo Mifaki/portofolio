@@ -6,6 +6,7 @@
 	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
 	import { skipHeroReveal } from '$lib/stores/transition';
 	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
+	import { isMobileViewport } from '$lib/utils/viewport';
 	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
 	import { goto, preloadData } from '$app/navigation';
@@ -205,6 +206,7 @@
 			goto(`/project/${projectId}`);
 			return;
 		}
+		const mobile = isMobileViewport();
 		skipNextLoader.set(true);
 		skipHeroReveal.set(true);
 		preloadData(`/project/${projectId}`).catch(() => {});
@@ -259,13 +261,33 @@
 			ease: 'power3.inOut'
 		});
 
-		await gsap.to(ghost, {
-			width: panelWidth,
-			duration: 1.1,
-			ease: 'power3.inOut'
-		});
+		if (!mobile) {
+			await gsap.to(ghost, {
+				width: panelWidth,
+				duration: 1.1,
+				ease: 'power3.inOut'
+			});
+		}
 
 		await goto(`/project/${projectId}`);
+
+		if (mobile) {
+			await tick();
+			const heroEl = document.querySelector('[data-project-hero]') as HTMLElement | null;
+			if (heroEl) {
+				const heroRect = heroEl.getBoundingClientRect();
+				await gsap.to(ghost, {
+					left: heroRect.left,
+					top: heroRect.top,
+					width: heroRect.width,
+					height: heroRect.height,
+					duration: 1.1,
+					ease: 'power3.inOut'
+				});
+				gsap.set(heroEl, { opacity: 1 });
+			}
+		}
+
 		await gsap.to(ghost, { opacity: 0, duration: 0.4, ease: 'power2.out' });
 		ghost.remove();
 	}
@@ -298,8 +320,8 @@
 						class="overflow-hidden"
 						class:mr-4={direction === 'horizontal'}
 						class:mb-4={direction === 'vertical'}
-						class:h-[600px]={direction === 'horizontal'}
-						class:w-[400px]={direction === 'horizontal'}
+						class:h-[min(112.5vw,600px)]={direction === 'horizontal'}
+						class:w-[min(75vw,400px)]={direction === 'horizontal'}
 						class:h-[400px]={direction === 'vertical'}
 						class:w-[500px]={direction === 'vertical'}
 					>
@@ -328,7 +350,7 @@
 
 <div
 	bind:this={dirButtonsEl}
-	class="pointer-events-auto fixed bottom-8 left-8 flex items-center gap-3"
+	class="pointer-events-auto fixed bottom-8 left-8 hidden items-center gap-3 lg:flex"
 >
 	<button
 		onclick={() => switchDirection('horizontal')}
@@ -353,9 +375,11 @@
 
 <div
 	bind:this={textOverlayEl}
-	class="pointer-events-none fixed right-8 bottom-8 text-right text-black"
+	class="pointer-events-none fixed right-6 bottom-6 text-right text-black lg:right-8 lg:bottom-8"
 >
 	<p class="text-xs uppercase opacity-60">{projects[activeIndex]?.category}</p>
-	<h2 class="font-clash text-6xl font-bold">{projects[activeIndex]?.title}</h2>
+	<h2 class="font-clash text-3xl font-bold md:text-5xl lg:text-6xl">
+		{projects[activeIndex]?.title}
+	</h2>
 	<p class="mt-1 text-sm opacity-60">{projects[activeIndex]?.year}</p>
 </div>

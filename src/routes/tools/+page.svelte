@@ -263,7 +263,7 @@
 	});
 </script>
 
-<div class="hidden w-full md:block">
+<div class="hidden w-full lg:block">
 	<div
 		bind:this={leftPanelEl}
 		class="fixed top-[112px] left-0 z-10 flex h-[calc(100vh-112px)] w-1/2 flex-col justify-between px-8 pb-16 md:px-14"
@@ -277,8 +277,8 @@
 			</h1>
 			<p bind:this={disclaimerEl} class="mt-8 max-w-md leading-relaxed opacity-50 lg:text-lg">
 				Personal tools I built to fix problems I found annoying. Made for myself, though one or two
-				friends use them too. <br /><br />Fair warning: these are 70-80% vibe-coded, so keep that in mind while
-				looking around.
+				friends use them too. <br /><br />Fair warning: these are 70-80% vibe-coded, so keep that in
+				mind while looking around.
 			</p>
 		</div>
 
@@ -331,7 +331,7 @@
 	</div>
 </div>
 
-<div bind:this={mobileRootEl} class="w-full px-8 pt-8 pb-32 md:hidden">
+<div bind:this={mobileRootEl} class="mx-auto w-full max-w-3xl px-8 pt-8 pb-32 lg:hidden">
 	<div class="mb-16">
 		<p class="mb-5 text-xs tracking-[0.4em] uppercase opacity-30">Personal Tools</p>
 		<h1 class="font-clash text-6xl leading-none font-bold">Tools</h1>

@@ -8,6 +8,7 @@
 	import { skipHeroReveal } from '$lib/stores/transition';
 	import { lenisInstance } from '$lib/stores/lenis';
 	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
+	import { isMobileViewport } from '$lib/utils/viewport';
 
 	interface Props {
 		project: Project;
@@ -31,6 +32,13 @@
 	let cContentEl: HTMLDivElement | undefined = $state();
 	let nextImgEl: HTMLImageElement | undefined = $state();
 	let scrollProgress = $state(0);
+
+	let mHeroWrapEl: HTMLDivElement | undefined = $state();
+	let mCategoryEl: HTMLDivElement | undefined = $state();
+	let mTitleEl: HTMLHeadingElement | undefined = $state();
+	let mYearEl: HTMLParagraphElement | undefined = $state();
+	let mIntroEl: HTMLParagraphElement | undefined = $state();
+	let mNextImgEl: HTMLImageElement | undefined = $state();
 
 	let initX = 0;
 	let initY = 0;
@@ -111,6 +119,43 @@
 		});
 	}
 
+	function setupMobilePage(fromHome: boolean) {
+		const fadeEls = [mCategoryEl, mTitleEl, mYearEl, mIntroEl].filter(Boolean) as HTMLElement[];
+		gsap.killTweensOf([...fadeEls, mHeroWrapEl].filter(Boolean));
+		gsap.set(fadeEls, { opacity: 0, y: 30 });
+		if (mNextImgEl) gsap.set(mNextImgEl, { clearProps: 'visibility' });
+		if (mHeroWrapEl) {
+			gsap.set(
+				mHeroWrapEl,
+				fromHome
+					? { clipPath: 'inset(0% 0% 0% 0%)', opacity: 0 }
+					: { clipPath: 'inset(0% 0% 100% 0%)', opacity: 1 }
+			);
+		}
+
+		unsubLoader?.();
+		unsubLoader = loaderDone.subscribe((done) => {
+			if (!done) return;
+			unsubLoader?.();
+			gsap.to(fadeEls, {
+				opacity: 1,
+				y: 0,
+				duration: 1,
+				stagger: 0.12,
+				ease: 'power3.out',
+				delay: fromHome ? 0.35 : 0.1
+			});
+			if (!fromHome && mHeroWrapEl) {
+				gsap.to(mHeroWrapEl, {
+					clipPath: 'inset(0% 0% 0% 0%)',
+					duration: 1.1,
+					ease: 'power3.out',
+					delay: 0.1
+				});
+			}
+		});
+	}
+
 	function setupPage(fromHome: boolean, forceAnimate = false) {
 		calcLayout();
 		gsap.set(titleEl!, { xPercent: -50, yPercent: -50, x: initX, y: initY, rotation: 0 });
@@ -127,6 +172,7 @@
 	}
 
 	function scrollUpdate() {
+		if (isMobileViewport()) return;
 		if (
 			!imgPanelEl ||
 			!morphPanelEl ||
@@ -205,7 +251,7 @@
 
 		if (preview) {
 			window.scrollTo(0, 0);
-			tick().then(() => setupPage(false, true));
+			tick().then(() => (isMobileViewport() ? setupMobilePage(false) : setupPage(false, true)));
 		}
 
 		return () => {
@@ -220,11 +266,17 @@
 
 		await tick();
 
-		if (!imgPanelEl || !morphPanelEl || !titleEl || !categoryRowEl || !yearEl || !cContentEl)
-			return;
-
 		const fromHome = get(skipHeroReveal);
 		if (fromHome) skipHeroReveal.set(false);
+
+		if (isMobileViewport()) {
+			window.scrollTo(0, 0);
+			setupMobilePage(fromHome);
+			return;
+		}
+
+		if (!imgPanelEl || !morphPanelEl || !titleEl || !categoryRowEl || !yearEl || !cContentEl)
+			return;
 
 		if (!from) {
 			setupPage(fromHome);
@@ -255,6 +307,76 @@
 
 		setupPage(fromHome, true);
 	});
+
+	async function handleMobileNextClick(nextId: string) {
+		if (preview) return;
+
+		if (!mNextImgEl) {
+			goto(`/project/${nextId}`);
+			return;
+		}
+
+		skipNextLoader.set(true);
+		skipHeroReveal.set(true);
+		preloadData(`/project/${nextId}`).catch(() => {});
+
+		const { left, top, width, height } = mNextImgEl.getBoundingClientRect();
+
+		const clientWidth = measureScrollbarAccountedWidth();
+
+		const ghost = mNextImgEl.cloneNode(true) as HTMLImageElement;
+		gsap.set(ghost, {
+			position: 'fixed',
+			left,
+			top,
+			width,
+			height,
+			margin: 0,
+			zIndex: 200,
+			objectFit: 'cover',
+			pointerEvents: 'none',
+			clipPath: 'none'
+		});
+		document.body.appendChild(ghost);
+		gsap.set(mNextImgEl, { visibility: 'hidden' });
+
+		await gsap.to(ghost, {
+			left: 0,
+			top: 0,
+			width: clientWidth,
+			height: window.innerHeight,
+			duration: 2.0,
+			ease: 'power3.inOut'
+		});
+
+		get(lenisInstance)?.scrollTo(0, { immediate: true });
+
+		await gsap.to(ghost, {
+			top: 112,
+			height: window.innerHeight - 112,
+			duration: 1.1,
+			ease: 'power3.inOut'
+		});
+
+		await goto(`/project/${nextId}`);
+		await tick();
+
+		const heroEl = document.querySelector('[data-project-hero]') as HTMLElement | null;
+		if (heroEl) {
+			const heroRect = heroEl.getBoundingClientRect();
+			await gsap.to(ghost, {
+				left: heroRect.left,
+				top: heroRect.top,
+				width: heroRect.width,
+				height: heroRect.height,
+				duration: 1.1,
+				ease: 'power3.inOut'
+			});
+			gsap.set(heroEl, { opacity: 1 });
+		}
+		await gsap.to(ghost, { opacity: 0, duration: 0.4, ease: 'power2.out' });
+		ghost.remove();
+	}
 
 	async function handleNextProjectClick(nextId: string) {
 		if (preview) return;
@@ -318,9 +440,106 @@
 </script>
 
 <div class="w-full bg-white">
-	<div class="h-[240vh]"></div>
+	<div class="lg:hidden">
+		<div
+			bind:this={mHeroWrapEl}
+			data-project-hero
+			class="h-[calc(100svh-112px)] w-full overflow-hidden"
+		>
+			{#if thumbnail}
+				<img class="h-full w-full object-cover" src={thumbnailSrc} alt={project.title} />
+			{/if}
+		</div>
 
-	<div bind:this={cContentEl} class="ml-52 px-12 pt-12 pb-40 opacity-0">
+		<div class="px-6 pt-12 md:px-10">
+			<div bind:this={mCategoryEl} class="flex items-center gap-5">
+				<div class="h-px w-7 shrink-0 bg-black/25"></div>
+				<span class="text-xs tracking-[0.3em] uppercase opacity-40">{project.category}</span>
+				{#if isPrivate}
+					<span
+						class="border border-black/20 px-2.5 py-1 text-[10px] tracking-[0.3em] uppercase opacity-50"
+					>
+						Private
+					</span>
+				{/if}
+			</div>
+			<h1 bind:this={mTitleEl} class="font-clash mt-6 text-5xl leading-none font-bold md:text-7xl">
+				{project.title}
+			</h1>
+			<p bind:this={mYearEl} class="mt-5 text-[9px] tracking-[0.48em] uppercase opacity-30">
+				{project.year}
+			</p>
+			{#if !isPrivate && project.texts.length > 0}
+				<p bind:this={mIntroEl} class="mt-8 max-w-xl text-lg leading-loose opacity-75">
+					{project.texts[0].content}
+				</p>
+			{/if}
+		</div>
+
+		<div class="px-6 pt-16 pb-32 md:px-10">
+			{#if isPrivate}
+				<div class="pb-8">
+					<p class="mb-5 text-xs tracking-[0.4em] uppercase opacity-30">Private Project</p>
+					<h3 class="font-clash mb-8 text-3xl leading-tight font-bold text-balance md:text-4xl">
+						This one stays behind closed doors.
+					</h3>
+					<p class="max-w-xl text-lg leading-loose opacity-75">
+						I'm really sorry I can't share more screenshots or details for this project due to its
+						private nature. I still wanted to include it here because I'm really proud of the work.
+						If we ever get to chat, I'd be happy to walk you through what I can.
+					</p>
+				</div>
+			{/if}
+
+			{#each isPrivate ? [] : gallery as img, i}
+				<div class="mb-8">
+					{#if img.orientation === 'landscape'}
+						<img class="aspect-video w-full object-cover" src={img.imageUrl} alt={project.title} />
+					{:else}
+						<div class="flex" class:justify-end={i % 2 !== 0}>
+							<img class="aspect-3/4 w-[70%] object-cover" src={img.imageUrl} alt={project.title} />
+						</div>
+					{/if}
+				</div>
+
+				{#if project.texts[i + 1]}
+					<div class="mb-12">
+						<p class="text-right text-lg leading-loose opacity-70">
+							{project.texts[i + 1].content}
+						</p>
+					</div>
+				{/if}
+			{/each}
+
+			{#if project.nextProject?.thumbnailUrl}
+				<div class="mt-24 border-t border-black/10 pt-12">
+					<p class="mb-5 text-xs tracking-[0.4em] uppercase opacity-30">Next</p>
+					<h3 class="font-clash mb-8 text-4xl leading-none font-bold md:text-5xl">
+						{project.nextProject.title}
+					</h3>
+					<div
+						class="cursor-pointer overflow-hidden"
+						role="button"
+						tabindex="0"
+						onclick={() => handleMobileNextClick(project.nextProject!.id)}
+						onkeydown={(e) => e.key === 'Enter' && handleMobileNextClick(project.nextProject!.id)}
+					>
+						<img
+							bind:this={mNextImgEl}
+							class="aspect-video w-full object-cover select-none"
+							src={nextThumbnailSrc}
+							alt={project.nextProject.title}
+							draggable="false"
+						/>
+					</div>
+				</div>
+			{/if}
+		</div>
+	</div>
+
+	<div class="hidden h-[240vh] lg:block"></div>
+
+	<div bind:this={cContentEl} class="ml-52 hidden px-12 pt-12 pb-40 opacity-0 lg:block">
 		{#if thumbnail}
 			<div class="mb-16">
 				<img class="aspect-video w-full object-cover" src={thumbnailSrc} alt={project.title} />
@@ -391,7 +610,7 @@
 
 <div
 	bind:this={imgPanelEl}
-	class="fixed top-[112px] left-0 z-10 h-[calc(100vh-112px)] w-[60%] overflow-hidden"
+	class="fixed top-[112px] left-0 z-10 hidden h-[calc(100vh-112px)] w-[60%] overflow-hidden lg:block"
 >
 	{#if thumbnail}
 		<img class="h-full w-full object-cover" src={thumbnailSrc} alt={project.title} />
@@ -400,7 +619,7 @@
 
 <div
 	bind:this={morphPanelEl}
-	class="fixed top-[112px] bottom-0 left-[60%] z-10 w-[40%] overflow-hidden border-r border-black/[0.07] bg-white"
+	class="fixed top-[112px] bottom-0 left-[60%] z-10 hidden w-[40%] overflow-hidden border-r border-black/[0.07] bg-white lg:block"
 >
 	<div bind:this={categoryRowEl} class="absolute top-[56px] left-[56px] flex items-center gap-5">
 		<div class="h-px w-7 shrink-0 bg-black/25"></div>

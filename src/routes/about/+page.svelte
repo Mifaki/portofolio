@@ -8,12 +8,24 @@
 	let { data }: PageProps = $props();
 	const about: About = data.about;
 
-	const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	const MONTHS = [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'May',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec'
+	];
 	function formatPeriod(sm: number, sy: number, em: number | null, ey: number | null) {
 		const end = em && ey ? `${MONTHS[em - 1]} ${ey}` : 'Present';
 		return `${MONTHS[sm - 1]} ${sy} – ${end}`;
 	}
-
 
 	let imgWrapperEl: HTMLDivElement | undefined;
 	let imageLayerEls: HTMLDivElement[] = [];
@@ -60,7 +72,9 @@
 				el.textContent = Array.from({ length: len }, (_, i) =>
 					i < Math.floor(p * len)
 						? target[i]
-						: target[i] === ' ' ? ' ' : chars[Math.floor(Math.random() * chars.length)]
+						: target[i] === ' '
+							? ' '
+							: chars[Math.floor(Math.random() * chars.length)]
 				).join('');
 				f++;
 				if (f <= frames) requestAnimationFrame(tick);
@@ -97,30 +111,43 @@
 			gsap.to(labelEl!, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.3 });
 			gsap.to(nameEl!, { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', delay: 0.45 });
 			gsap.to(descEls.filter(Boolean), {
-				opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.1, delay: 0.65
+				opacity: 1,
+				y: 0,
+				duration: 0.9,
+				ease: 'power3.out',
+				stagger: 0.1,
+				delay: 0.65
 			});
 			gsap.to(socialEl!, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.85 });
 		});
 
-		const stackObs = new IntersectionObserver((entries) => {
-			if (!entries.some((e) => e.isIntersecting)) return;
-			stackObs.disconnect();
+		const stackObs = new IntersectionObserver(
+			(entries) => {
+				if (!entries.some((e) => e.isIntersecting)) return;
+				stackObs.disconnect();
 
-			stackFilledEls.filter(Boolean).forEach((el, i) => {
-				const s = about.techStacks[i];
-				if (!s) return;
-				const delay = i * 0.15;
+				stackFilledEls.filter(Boolean).forEach((el, i) => {
+					const s = about.techStacks[i];
+					if (!s) return;
+					const delay = i * 0.15;
 
-				gsap.fromTo(
-					el,
-					{ clipPath: 'inset(0 100% 0 0)' },
-					{ clipPath: `inset(0 ${100 - s.percentage}% 0 0)`, duration: 2.4, ease: 'power3.out', delay }
-				);
+					gsap.fromTo(
+						el,
+						{ clipPath: 'inset(0 100% 0 0)' },
+						{
+							clipPath: `inset(0 ${100 - s.percentage}% 0 0)`,
+							duration: 2.4,
+							ease: 'power3.out',
+							delay
+						}
+					);
 
-				scramble(el, s.name, delay * 1000);
-				scramble(stackGhostEls[i], s.name, delay * 1000);
-			});
-		}, { threshold: 0.2 });
+					scramble(el, s.name, delay * 1000);
+					scramble(stackGhostEls[i], s.name, delay * 1000);
+				});
+			},
+			{ threshold: 0.2 }
+		);
 		if (stackSectionEl) stackObs.observe(stackSectionEl);
 
 		const onScroll = () => {
@@ -145,13 +172,18 @@
 </script>
 
 <div class="w-full bg-white">
-	<div class="flex h-screen w-full">
-		<div class="relative flex w-[55%] flex-col justify-center px-14 pb-16 pt-[112px]">
+	<div class="flex min-h-screen w-full flex-col lg:h-screen lg:flex-row">
+		<div
+			class="relative flex w-full flex-col justify-center px-6 pt-10 pb-12 md:px-10 lg:w-[55%] lg:px-14 lg:pt-[112px] lg:pb-16"
+		>
 			<div bind:this={labelEl} class="mb-8 flex items-center gap-5">
 				<div class="h-px w-7 shrink-0 bg-black/25"></div>
 				<span class="text-xs tracking-[0.3em] uppercase opacity-40">About</span>
 			</div>
-			<h1 bind:this={nameEl} class="font-clash mb-8 text-[clamp(3rem,7vw,7rem)] font-bold leading-none">
+			<h1
+				bind:this={nameEl}
+				class="font-clash mb-8 text-[clamp(3rem,7vw,7rem)] leading-none font-bold"
+			>
 				{about.name}
 			</h1>
 			<div class="max-w-sm space-y-4">
@@ -160,31 +192,51 @@
 				{/each}
 			</div>
 			{#if about.github || about.linkedin || about.instagram || about.resumeUrl}
-				<div bind:this={socialEl} class="mt-12 flex items-center gap-6">
+				<div bind:this={socialEl} class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3">
 					{#if about.github}
-						<a href={about.github} target="_blank" rel="noopener noreferrer"
-							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100">GitHub</a>
+						<a
+							href={about.github}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100"
+							>GitHub</a
+						>
 					{/if}
 					{#if about.linkedin}
 						<span class="text-xs opacity-20">/</span>
-						<a href={about.linkedin} target="_blank" rel="noopener noreferrer"
-							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100">LinkedIn</a>
+						<a
+							href={about.linkedin}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100"
+							>LinkedIn</a
+						>
 					{/if}
 					{#if about.instagram}
 						<span class="text-xs opacity-20">/</span>
-						<a href={about.instagram} target="_blank" rel="noopener noreferrer"
-							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100">Instagram</a>
+						<a
+							href={about.instagram}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100"
+							>Instagram</a
+						>
 					{/if}
 					{#if about.resumeUrl}
 						<span class="text-xs opacity-20">/</span>
-						<a href={about.resumeUrl} target="_blank" rel="noopener noreferrer"
-							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100">Resume</a>
+						<a
+							href={about.resumeUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="text-xs tracking-[0.25em] uppercase opacity-40 transition-opacity duration-200 hover:opacity-100"
+							>Resume</a
+						>
 					{/if}
 				</div>
 			{/if}
 		</div>
 
-		<div class="w-[45%] pt-[112px]">
+		<div class="h-[55vh] w-full lg:h-auto lg:w-[45%] lg:pt-[112px]">
 			<div bind:this={imgWrapperEl} class="relative h-full w-full overflow-hidden">
 				{#each about.images as img, i}
 					<div bind:this={imageLayerEls[i]} class="absolute inset-0">
@@ -200,19 +252,21 @@
 
 	<div bind:this={contentEl} class="opacity-0">
 		{#if about.workExperiences.length > 0}
-			<div class="border-t border-black/10 px-14 py-24">
+			<div class="border-t border-black/10 px-6 py-16 md:px-10 lg:px-14 lg:py-24">
 				<div class="mb-16 flex items-center gap-5">
 					<div class="h-px w-7 shrink-0 bg-black/25"></div>
 					<span class="text-xs tracking-[0.3em] uppercase opacity-40">Experience</span>
 				</div>
 				<div>
 					{#each about.workExperiences as exp}
-						<div class="border-t border-black/[0.07] py-14 first:border-t-0">
-							<div class="flex items-start justify-between gap-8">
-								<h3 class="font-clash text-[clamp(2.5rem,5vw,5rem)] font-bold leading-none">
+						<div class="border-t border-black/[0.07] py-10 first:border-t-0 lg:py-14">
+							<div
+								class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-8"
+							>
+								<h3 class="font-clash text-[clamp(2.5rem,5vw,5rem)] leading-none font-bold">
 									{exp.company}
 								</h3>
-								<div class="shrink-0 pt-2 text-right">
+								<div class="shrink-0 sm:pt-2 sm:text-right">
 									{#if exp.location}
 										<p class="text-xs tracking-[0.2em] uppercase opacity-35">{exp.location}</p>
 									{/if}
@@ -224,7 +278,9 @@
 							<div class="mt-6">
 								<p class="text-xl font-medium opacity-60">{exp.role}</p>
 								{#if exp.description}
-									<p class="mt-3 max-w-2xl text-base leading-relaxed opacity-35">{exp.description}</p>
+									<p class="mt-3 max-w-2xl text-base leading-relaxed opacity-35">
+										{exp.description}
+									</p>
 								{/if}
 							</div>
 						</div>
@@ -234,32 +290,41 @@
 		{/if}
 
 		{#if about.techStacks.length > 0}
-		<div class="border-t border-black/10 px-14 py-24">
-			<div class="mb-16 flex items-center gap-5">
-				<div class="h-px w-7 shrink-0 bg-black/25"></div>
-				<span class="text-xs tracking-[0.3em] uppercase opacity-40">Stack</span>
-			</div>
-			<div bind:this={stackSectionEl} class="grid grid-cols-2">
-				{#each about.techStacks as stack, i}
-					<div class="flex items-baseline justify-between py-6
-						{i < 2 ? '' : 'border-t border-black/[0.06]'}
-						{i % 2 === 0 ? 'pr-12' : 'border-l border-black/[0.06] pl-12'}">
-						<div class="relative min-w-0">
-							<span
-								bind:this={stackGhostEls[i]}
-								class="font-clash whitespace-nowrap text-[clamp(1.5rem,3vw,3.5rem)] font-bold opacity-[0.07]"
-							>{stack.name}</span>
-							<span
-								bind:this={stackFilledEls[i]}
-								class="font-clash absolute inset-0 whitespace-nowrap text-[clamp(1.5rem,3vw,3.5rem)] font-bold"
-								style="clip-path: inset(0 100% 0 0)"
-							>{stack.name}</span>
+			<div class="border-t border-black/10 px-6 py-16 md:px-10 lg:px-14 lg:py-24">
+				<div class="mb-16 flex items-center gap-5">
+					<div class="h-px w-7 shrink-0 bg-black/25"></div>
+					<span class="text-xs tracking-[0.3em] uppercase opacity-40">Stack</span>
+				</div>
+				<div bind:this={stackSectionEl} class="grid grid-cols-1 lg:grid-cols-2">
+					{#each about.techStacks as stack, i}
+						<div
+							class="flex items-baseline justify-between py-6
+						{i === 0
+								? ''
+								: i === 1
+									? 'border-t border-black/[0.06] lg:border-t-0'
+									: 'border-t border-black/[0.06]'}
+						{i % 2 === 0 ? 'lg:pr-12' : 'lg:border-l lg:border-black/[0.06] lg:pl-12'}"
+						>
+							<div class="relative min-w-0">
+								<span
+									bind:this={stackGhostEls[i]}
+									class="font-clash text-[clamp(1.5rem,3vw,3.5rem)] font-bold whitespace-nowrap opacity-[0.07]"
+									>{stack.name}</span
+								>
+								<span
+									bind:this={stackFilledEls[i]}
+									class="font-clash absolute inset-0 text-[clamp(1.5rem,3vw,3.5rem)] font-bold whitespace-nowrap"
+									style="clip-path: inset(0 100% 0 0)">{stack.name}</span
+								>
+							</div>
+							<span class="ml-6 shrink-0 text-xs tracking-[0.25em] uppercase opacity-25"
+								>{stack.category.name}</span
+							>
 						</div>
-						<span class="ml-6 shrink-0 text-xs tracking-[0.25em] uppercase opacity-25">{stack.category.name}</span>
-					</div>
-				{/each}
+					{/each}
+				</div>
 			</div>
-		</div>
 		{/if}
 
 		<div class="h-24"></div>

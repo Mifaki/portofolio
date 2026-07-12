@@ -198,7 +198,11 @@
 				<img class="aspect-video w-full object-cover" src={img.imageUrl} alt={tool.title} />
 			{:else}
 				<div class="flex" class:justify-end={i % 2 !== 0}>
-					<img class="aspect-3/4 w-[52%] object-cover" src={img.imageUrl} alt={tool.title} />
+					<img
+						class="aspect-3/4 w-[70%] object-cover lg:w-[52%]"
+						src={img.imageUrl}
+						alt={tool.title}
+					/>
 				</div>
 			{/if}
 		</div>

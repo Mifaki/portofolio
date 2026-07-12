@@ -1,6 +1,7 @@
 <script lang="ts">
 	import logo from '$lib/assets/logo-black.png';
 	import { page } from '$app/state';
+	import { afterNavigate } from '$app/navigation';
 	import { gsap } from 'gsap';
 	import { onMount } from 'svelte';
 	import { setExperience } from '$lib/utils/experience';
@@ -81,22 +82,13 @@
 		}
 	}
 
-	function closeMenu() {
+	afterNavigate(() => {
 		if (!isOpen) return;
 		isOpen = false;
-		gsap.to(strip1, { y: 0, rotate: 0, duration: 0.3, ease: 'power2.inOut' });
-		gsap.to(strip2, { y: 0, rotate: 0, duration: 0.3, ease: 'power2.inOut' });
-		gsap.to(drawerLinks, {
-			opacity: 0,
-			x: 40,
-			duration: 0.25,
-			ease: 'power2.in',
-			stagger: { each: 0.07, from: 'end' },
-			onComplete: () => {
-				gsap.to(drawerEl, { x: '100%', duration: 0.4, ease: 'power3.in' });
-			}
-		});
-	}
+		gsap.set([strip1, strip2], { y: 0, rotate: 0 });
+		gsap.set(drawerEl, { x: '100%' });
+		gsap.set(drawerLinks, { opacity: 0, x: 40 });
+	});
 
 	onMount(() => {
 		gsap.set(drawerEl, { x: '100%' });
@@ -153,10 +145,7 @@
 				<a
 					bind:this={drawerLinks[i]}
 					href={link.href}
-					onclick={() => {
-						handleLinkClick(link.href);
-						closeMenu();
-					}}
+					onclick={() => handleLinkClick(link.href)}
 					class="font-clash text-4xl tracking-widest uppercase opacity-40 transition-opacity"
 					class:opacity-100={isActive}
 					class:font-bold={isActive}
