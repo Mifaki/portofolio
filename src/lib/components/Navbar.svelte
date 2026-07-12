@@ -3,13 +3,19 @@
 	import { page } from '$app/state';
 	import { gsap } from 'gsap';
 	import { onMount } from 'svelte';
+	import { setExperience } from '$lib/utils/experience';
 
 	const links = [
 		{ href: '/', label: 'Home' },
 		{ href: '/about', label: 'About' },
 		{ href: '/tools', label: 'Tools' },
-		{ href: '/contact', label: 'Contact' }
+		{ href: '/contact', label: 'Contact' },
+		{ href: '/simple', label: 'Simple' }
 	];
+
+	function handleLinkClick(href: string) {
+		if (href === '/simple') setExperience('simple');
+	}
 
 	let lineEls: HTMLSpanElement[] = [];
 	let isOpen = $state(false);
@@ -110,6 +116,7 @@
 					href={link.href}
 					class="relative flex flex-col gap-[3px] opacity-50"
 					class:opacity-100={isActive}
+					onclick={() => handleLinkClick(link.href)}
 					onmouseenter={() => handleMouseEnter(i)}
 					onmouseleave={() => handleMouseLeave(i)}
 				>
@@ -146,7 +153,10 @@
 				<a
 					bind:this={drawerLinks[i]}
 					href={link.href}
-					onclick={closeMenu}
+					onclick={() => {
+						handleLinkClick(link.href);
+						closeMenu();
+					}}
 					class="font-clash text-4xl tracking-widest uppercase opacity-40 transition-opacity"
 					class:opacity-100={isActive}
 					class:font-bold={isActive}

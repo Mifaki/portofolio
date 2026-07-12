@@ -2,7 +2,8 @@
 	import { onMount, untrack } from 'svelte';
 	import { get } from 'svelte/store';
 	import { beforeNavigate, goto } from '$app/navigation';
-	import { loaderDone, skipNextLoader } from '$lib/stores/loader';
+	import { page } from '$app/state';
+	import { loaderDone, loaderHold, skipNextLoader } from '$lib/stores/loader';
 	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
 
 	interface Props {
@@ -10,7 +11,7 @@
 	}
 	let { ready = false }: Props = $props();
 
-	let visible = $state(true);
+	let visible = $state(!page.url.pathname.startsWith('/simple'));
 	let showSlowMessage = $state(false);
 	let paused = $state(false);
 	let slideIn = $state(false);
@@ -27,12 +28,20 @@
 	const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
 	onMount(() => {
+		if (!visible) {
+			loaderDone.set(true);
+			return;
+		}
 		window.scrollTo(0, 0);
 		setTimeout(() => window.scrollTo(0, 0), 0);
 	});
 
 	beforeNavigate((nav) => {
 		if (entering) return;
+		if (nav.to?.url.pathname.startsWith('/simple')) {
+			skipNextLoader.set(true);
+			return;
+		}
 		if (get(skipNextLoader)) return;
 		if (nav.willUnload || !nav.to || nav.to.route.id === null) return;
 		if (nav.type !== 'link' && nav.type !== 'goto') return;
@@ -115,7 +124,7 @@
 	}
 
 	async function handleIteration() {
-		if (!ready || exiting) return;
+		if (!ready || exiting || get(loaderHold)) return;
 
 		exiting = true;
 		const id = ++runId;

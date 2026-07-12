@@ -1,7 +1,8 @@
 <script lang="ts">
 	import '../app.css';
 	import PageLoader from '$lib/components/PageLoader.svelte';
-	import { navigating } from '$app/state';
+	import ExperienceGate from '$lib/components/ExperienceGate.svelte';
+	import { navigating, page } from '$app/state';
 	import { afterNavigate, goto } from '$app/navigation';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { loaderDone } from '$lib/stores/loader';
@@ -12,6 +13,7 @@
 
 	let { children } = $props();
 	let ready = $derived(!navigating.to);
+	let isSimple = $derived(page.url.pathname.startsWith('/simple'));
 
 	onMount(() => {
 		const lenis = new Lenis({
@@ -78,9 +80,14 @@
 	});
 </script>
 
+{#if page.url.pathname === '/'}
+	<ExperienceGate />
+{/if}
 <PageLoader {ready} />
-<div class="app">
-	<Navbar />
+<div class="app" class:simple={isSimple}>
+	{#if !isSimple}
+		<Navbar />
+	{/if}
 	<main>
 		{@render children()}
 	</main>
@@ -92,6 +99,9 @@
 		flex-direction: column;
 		min-height: 100vh;
 		overflow: hidden;
+	}
+	.app.simple {
+		overflow: visible;
 	}
 	main {
 		flex: 1;
