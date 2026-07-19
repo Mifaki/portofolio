@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import type { ProjectImage } from '$lib/types/project';
+	import Seo from '$lib/components/Seo.svelte';
+	import { SITE, descriptionFromTexts } from '$lib/utils/seo';
 
 	let { data }: PageProps = $props();
 
@@ -10,9 +12,12 @@
 	let isPrivate = $derived(data.project.visibility === 'private');
 </script>
 
-<svelte:head>
-	<title>{data.project.title}</title>
-</svelte:head>
+<Seo
+	title={`${data.project.title} - ${SITE.name}`}
+	description={descriptionFromTexts(data.project.texts)}
+	image={thumbnail?.imageUrl}
+	type="article"
+/>
 
 <div class="w-full max-w-3xl px-8 py-16 lg:py-24">
 	<a

@@ -9,6 +9,9 @@
 	import { skipHeroReveal } from '$lib/stores/transition';
 	import { lenisInstance } from '$lib/stores/lenis';
 	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
+	import Seo from '$lib/components/Seo.svelte';
+	import { page } from '$app/state';
+	import { SITE, descriptionFromTexts, toolJsonLd } from '$lib/utils/seo';
 
 	let { data }: PageProps = $props();
 	const tool = $derived<Tool>(data.tool);
@@ -149,6 +152,14 @@
 		ghost.remove();
 	}
 </script>
+
+<Seo
+	title={`${tool.title} - ${SITE.name}`}
+	description={descriptionFromTexts(tool.texts)}
+	image={thumbnail?.imageUrl}
+	type="article"
+	jsonLd={toolJsonLd(tool, page.url.origin + page.url.pathname)}
+/>
 
 <div bind:this={rootEl} class="w-full bg-white px-8 pt-8 pb-32 md:px-14">
 	<div class="mb-16">

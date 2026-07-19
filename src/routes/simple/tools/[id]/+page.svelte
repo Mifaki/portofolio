@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import type { ToolImage } from '$lib/types/tool';
+	import Seo from '$lib/components/Seo.svelte';
+	import { SITE, descriptionFromTexts } from '$lib/utils/seo';
 
 	let { data }: PageProps = $props();
 
@@ -8,9 +10,12 @@
 	let texts = $derived([...data.tool.texts].sort((a, b) => a.position - b.position));
 </script>
 
-<svelte:head>
-	<title>{data.tool.title}</title>
-</svelte:head>
+<Seo
+	title={`${data.tool.title} - ${SITE.name}`}
+	description={descriptionFromTexts(data.tool.texts)}
+	image={thumbnail?.imageUrl}
+	type="article"
+/>
 
 <div class="w-full max-w-3xl px-8 py-16 lg:py-24">
 	<a

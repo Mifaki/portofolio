@@ -1,6 +1,9 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import type { About } from '$lib/types/about';
+	import Seo from '$lib/components/Seo.svelte';
+	import { page } from '$app/state';
+	import { descriptionFromTexts, personJsonLd } from '$lib/utils/seo';
 	import { onMount } from 'svelte';
 	import gsap from 'gsap';
 	import { loaderDone } from '$lib/stores/loader';
@@ -170,6 +173,13 @@
 		};
 	});
 </script>
+
+<Seo
+	title={`About - ${about.name}`}
+	description={descriptionFromTexts(about.descriptions)}
+	type="profile"
+	jsonLd={personJsonLd(page.url.origin, about)}
+/>
 
 <div class="w-full bg-white">
 	<div class="flex min-h-screen w-full flex-col lg:h-screen lg:flex-row">

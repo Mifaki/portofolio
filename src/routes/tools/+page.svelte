@@ -9,6 +9,8 @@
 	import { skipHeroReveal } from '$lib/stores/transition';
 	import { lenisInstance } from '$lib/stores/lenis';
 	import { measureScrollbarAccountedWidth } from '$lib/utils/scrollbar';
+	import Seo from '$lib/components/Seo.svelte';
+	import { SITE } from '$lib/utils/seo';
 
 	let { data }: PageProps = $props();
 	// TEMP: repeat the tools to 8 entries
@@ -262,6 +264,11 @@
 		};
 	});
 </script>
+
+<Seo
+	title={`Tools - ${SITE.name}`}
+	description={`Tools and side projects built by ${SITE.name}.`}
+/>
 
 <div class="hidden w-full lg:block">
 	<div

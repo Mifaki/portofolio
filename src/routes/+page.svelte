@@ -10,6 +10,9 @@
 	import { onMount, tick } from 'svelte';
 	import gsap from 'gsap';
 	import { goto, preloadData } from '$app/navigation';
+	import { page } from '$app/state';
+	import Seo from '$lib/components/Seo.svelte';
+	import { SITE, personJsonLd } from '$lib/utils/seo';
 
 	let { data }: PageProps = $props();
 	const projects = [...data.projects, ...data.projects];
@@ -292,6 +295,8 @@
 		ghost.remove();
 	}
 </script>
+
+<Seo title={`${SITE.name} - ${SITE.role}`} jsonLd={personJsonLd(page.url.origin)} />
 
 <div
 	class="flex h-screen w-full cursor-pointer items-center justify-center active:cursor-grabbing"

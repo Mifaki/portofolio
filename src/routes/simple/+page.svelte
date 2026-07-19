@@ -3,11 +3,27 @@
 	import type { ProjectImage } from '$lib/types/project';
 	import type { ToolImage } from '$lib/types/tool';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import { setExperience } from '$lib/utils/experience';
+	import Seo from '$lib/components/Seo.svelte';
+	import { SITE, descriptionFromTexts, personJsonLd } from '$lib/utils/seo';
 
 	let { data }: PageProps = $props();
 
-	const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	const MONTHS = [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'May',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec'
+	];
 
 	const sections = [
 		{ id: 'about', label: 'About' },
@@ -16,9 +32,7 @@
 		{ id: 'tools', label: 'Tools' }
 	];
 
-	let descriptions = $derived(
-		[...data.about.descriptions].sort((a, b) => a.position - b.position)
-	);
+	let descriptions = $derived([...data.about.descriptions].sort((a, b) => a.position - b.position));
 	let workExperiences = $derived(
 		[...data.about.workExperiences].sort((a, b) => a.position - b.position)
 	);
@@ -46,9 +60,11 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{data.about.name}</title>
-</svelte:head>
+<Seo
+	title={`${data.about.name} - ${SITE.role}`}
+	description={descriptionFromTexts(data.about.descriptions)}
+	jsonLd={personJsonLd(page.url.origin, data.about)}
+/>
 
 <div class="w-full max-w-6xl px-8 py-16 lg:flex lg:items-start lg:gap-20 lg:py-24">
 	<header class="mb-16 lg:sticky lg:top-24 lg:mb-0 lg:w-2/5">
@@ -203,7 +219,9 @@
 			<ul class="flex flex-col gap-12">
 				{#each data.tools as tool}
 					{@const thumbnail = tool.images.find((img: ToolImage) => img.type === 'thumbnail')}
-					{@const intro = [...tool.texts].sort((a, b) => a.position - b.position).find((t) => t.type === 'regular')}
+					{@const intro = [...tool.texts]
+						.sort((a, b) => a.position - b.position)
+						.find((t) => t.type === 'regular')}
 					<li>
 						<a
 							href={`/simple/tools/${tool.id}`}
